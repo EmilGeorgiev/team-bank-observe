@@ -148,6 +148,21 @@ module.exports = function ( grunt ) {
             expand: true
           }
         ]
+      },
+      minyfy_to_server: {
+          expand: true,
+          files: [
+              {
+                  expand: true,
+                  cwd: '.',
+                  src: [
+                      '<%= compile_dir %>/assets/ngbp-0.3.2.css',
+                      '<%= compile_dir %>/assets/ngbp-0.3.2.js',
+                      '<%= compile_dir %>/index.html'
+                  ],
+                  dest: '../bank-server/src/main/webapp'
+              }
+          ]
       }
     },
 
@@ -541,7 +556,7 @@ module.exports = function ( grunt ) {
    * before watching for changes.
    */
   grunt.renameTask( 'watch', 'delta' );
-  grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
+  grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'copy_minify_server', 'delta' ] );
 
   /**
    * The default task is to build and compile.
@@ -630,5 +645,7 @@ module.exports = function ( grunt ) {
       }
     });
   });
+
+  grunt.registerTask('copy_minify_server', ['compile', 'copy:minyfy_to_server']);
 
 };
