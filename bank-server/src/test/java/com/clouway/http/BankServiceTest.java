@@ -1,6 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.core.Client;
+import com.clouway.core.TransactionAmount;
 import com.clouway.core.BankRepository;
 import com.clouway.core.CurrentUser;
 import com.clouway.core.TransactionInfo;
@@ -26,7 +26,7 @@ public class BankServiceTest {
     private BankService bankService;
     private FakeRequestReader fakeRequestReader;
     private TransactionInfo transactionInfo;
-    private Client client;
+    private TransactionAmount transactionAmount;
     private ReplyMatcher<TransactionInfo> replyMatcher = new ReplyMatcher<>();
     private CurrentUser currentUser;
 
@@ -44,9 +44,9 @@ public class BankServiceTest {
     public void setUp() {
 
         currentUser = new CurrentUser("Ivan");
-        client = new Client(100d);
+        transactionAmount = new TransactionAmount(100d);
         bankService = new BankService(bankRepository, Providers.of(currentUser));
-        fakeRequestReader = new FakeRequestReader(currentUser.getName(), client.getAmount());
+        fakeRequestReader = new FakeRequestReader(currentUser.getName(), transactionAmount.getAmount());
         transactionInfo = new TransactionInfo(message("Success"), amount(100d));
 
     }
@@ -56,7 +56,7 @@ public class BankServiceTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(request).read(Client.class);
+            oneOf(request).read(TransactionAmount.class);
             will(returnValue(fakeRequestReader));
 
             oneOf(bankRepository).deposit(clientName("Ivan"), amount(100d));
@@ -75,7 +75,7 @@ public class BankServiceTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(request).read(Client.class);
+            oneOf(request).read(TransactionAmount.class);
             will(returnValue(fakeRequestReader));
 
             oneOf(bankRepository).withdraw(clientName("Ivan"), amount(100d));

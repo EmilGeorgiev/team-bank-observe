@@ -6,12 +6,12 @@ package com.clouway.core;
 public class TransactionAmount {
     private double amount;
 
-    public TransactionAmount(String clientName, double amount) {
+    public TransactionAmount(double amount) {
 
         this.amount = amount;
     }
 
-    public TransactionAmount(double v) {
+    public TransactionAmount() {
     }
 
     public double getAmount() {

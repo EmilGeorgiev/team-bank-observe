@@ -28,7 +28,7 @@ public class BankRepositoryRepositoryTest {
     public void setUp() throws UnknownHostException {
         MongoClient mongoClient = new MongoClient();
 
-        db = mongoClient.getDB("TeamBankTest");
+        db = mongoClient.getDB("team-bank-test");
 
         persistentBankRepository = new PersistentBankRepository(Providers.of(db));
 
@@ -49,32 +49,8 @@ public class BankRepositoryRepositoryTest {
         assertThat(info.message, is("Success"));
         assertThat(info.amount, is(120d));
 
-
-
-
-
-
     }
 
-//    private Matcher<String> matcher(final Object expected) {
-//
-//        return new BaseMatcher<String>() {
-//
-//            protected Object theExpected = expected;
-//
-//            @Override
-//            public boolean matches(Object o) {
-//                final String str = (String) o;
-//                boolean bool = theExpected.equals(str);
-//                return bool;
-//            }
-//
-//            @Override
-//            public void describeTo(Description description) {
-//                description.appendText(theExpected.toString());
-//                }
-//        };
-//    }
 
     @Test
     public void makeTwoDepositTransaction() throws Exception {
@@ -126,6 +102,6 @@ public class BankRepositoryRepositoryTest {
     }
 
     private DBCollection clients() {
-        return db.getCollection("clients");
+        return db.getCollection("users");
     }
 }

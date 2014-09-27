@@ -25,10 +25,10 @@ public class BankUtil {
         DBObject query = new BasicDBObject("name", clientName)
                 .append("amount", amount);
 
-        clients().insert(query);
+        users().insert(query);
     }
 
-    private DBCollection clients() {
-        return db.getCollection("clients");
+    private DBCollection users() {
+        return db.getCollection("users");
     }
 }

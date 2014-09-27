@@ -1,6 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.core.Client;
+import com.clouway.core.TransactionAmount;
 import com.clouway.core.BankRepository;
 import com.clouway.core.CurrentUser;
 import com.clouway.core.TransactionInfo;
@@ -34,9 +34,9 @@ public class BankService {
     @Post
     public Reply<?> deposit(Request request) {
 
-        Client client = request.read(Client.class).as(Json.class);
+        TransactionAmount transactionAmount = request.read(TransactionAmount.class).as(Json.class);
 
-        TransactionInfo info = bankRepository.deposit(currentUser.get().getName(), client.getAmount());
+        TransactionInfo info = bankRepository.deposit(currentUser.get().getName(), transactionAmount.getAmount());
 
         return Reply.with(info).as(Json.class);
     }
@@ -45,9 +45,9 @@ public class BankService {
     @Post
     public Reply<?> withdraw(Request request) {
 
-        Client client = request.read(Client.class).as(Json.class);
+        TransactionAmount transactionAmount = request.read(TransactionAmount.class).as(Json.class);
 
-        TransactionInfo info = bankRepository.withdraw(currentUser.get().getName(), client.getAmount());
+        TransactionInfo info = bankRepository.withdraw(currentUser.get().getName(), transactionAmount.getAmount());
 
         return Reply.with(info).as(Json.class);
     }

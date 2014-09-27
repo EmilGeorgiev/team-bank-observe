@@ -34,7 +34,7 @@ public class PersistentBankRepository implements BankRepository {
 
         DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", amount));
 
-        clients().update(query, update);
+        users().update(query, update);
 
         return new TransactionInfo("Success", getAmountBy(clientName));
     }
@@ -59,7 +59,7 @@ public class PersistentBankRepository implements BankRepository {
 
         DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", -amount));
 
-        clients().update(query, update);
+        users().update(query, update);
 
         return new TransactionInfo("Success", getAmountBy(clientName));
 
@@ -74,14 +74,14 @@ public class PersistentBankRepository implements BankRepository {
         DBObject projection = new BasicDBObject("amount", 1)
                 .append("_id", 0);
 
-        BasicDBObject amount = (BasicDBObject) clients().findOne(criteria, projection);
+        BasicDBObject amount = (BasicDBObject) users().findOne(criteria, projection);
 
         return amount.getDouble("amount");
 
     }
 
-    private DBCollection clients() {
-        return dbProvider.get().getCollection("clients");
+    private DBCollection users() {
+        return dbProvider.get().getCollection("users");
     }
 
 
