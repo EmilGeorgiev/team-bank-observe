@@ -1,4 +1,4 @@
-angular.module( 'teamBank', [
+angular.module( 'ngBoilerplate', [
   'templates-app',
   'templates-common',
   'transaction',
@@ -6,7 +6,7 @@ angular.module( 'teamBank', [
 ])
 
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider ) {
-  $urlRouterProvider.otherwise( '/transaction' );
+  $urlRouterProvider.otherwise( 'transaction' );
 })
 
 .run( function run () {

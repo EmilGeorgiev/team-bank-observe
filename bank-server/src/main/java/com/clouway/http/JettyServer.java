@@ -6,10 +6,9 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * Created by emil on 14-9-27.
+ * Created by emil on 14-9-26.
  */
 public class JettyServer {
-
     public static void main(String[] args) throws Exception {
 
         Server server = new Server(8090);

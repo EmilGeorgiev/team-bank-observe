@@ -1,5 +1,6 @@
 package com.clouway.persistent;
 
+import com.clouway.core.CurrentUser;
 import com.clouway.core.Clock;
 import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
@@ -26,6 +27,11 @@ public class PersistentSessionRepository implements SessionRepository {
 
         this.clock = clock;
         this.db = dbProvider.get();
+    }
+
+    @Override
+    public CurrentUser getClientName(String sessionId) {
+        return new CurrentUser("Ivan");
     }
 
     @Override

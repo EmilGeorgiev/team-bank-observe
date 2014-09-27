@@ -1,6 +1,7 @@
 package com.clouway.http;
 
 import com.clouway.core.*;
+import com.clouway.persistent.PersistentBankRepository;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.servlet.RequestScoped;
@@ -16,6 +17,9 @@ public class HttpModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
+        super.configureServlets();
+
+        bind(BankRepository.class).to(PersistentBankRepository.class);
         bind(IdGenerator.class).to(SessionIdGenerator.class);
         bind(SiteMap.class).to(LabelMap.class);
         bind(Clock.class).to(CalendarUtil.class);
@@ -38,4 +42,9 @@ public class HttpModule extends ServletModule {
         }
         return null;
     }
+
+
+
+
+
 }

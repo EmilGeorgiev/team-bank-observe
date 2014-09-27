@@ -5,6 +5,8 @@ package com.clouway.core;
  */
 public interface SessionRepository {
 
+    CurrentUser getClientName(String sessionId);
+
     void addUser(String username, String sessionId);
 
     void remove(String session);

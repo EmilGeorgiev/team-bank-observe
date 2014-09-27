@@ -1,4 +1,4 @@
-describe( 'AppCtrl', function() {
+xdescribe( 'AppCtrl', function() {
   describe( 'isCurrentUrl', function() {
     var AppCtrl, $location, $scope;
 
