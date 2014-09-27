@@ -1,9 +1,5 @@
 /**
-<<<<<<< HEAD
- * ngbp - v0.3.2 - 2014-09-27
-=======
  * ngbp - v0.3.2 - 2014-09-26
->>>>>>> this should be delete
  * https://github.com/ngbp/ngbp
  *
  * Copyright (c) 2014 Josh David Miller
