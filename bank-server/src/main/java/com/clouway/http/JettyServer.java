@@ -1,4 +1,4 @@
-package com.clouway.core;
+package com.clouway.http;
 
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.server.Server;
