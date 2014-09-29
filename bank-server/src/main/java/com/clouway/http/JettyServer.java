@@ -1,5 +1,3 @@
-import org.eclipse.jetty.webapp.WebAppContext;
-
 package com.clouway.http;
 
 import org.apache.jasper.servlet.JspServlet;
@@ -35,5 +33,4 @@ public class JettyServer {
         server.join();
 
     }
-
 }
