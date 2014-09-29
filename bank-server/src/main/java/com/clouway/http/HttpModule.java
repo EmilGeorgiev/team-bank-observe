@@ -1,5 +1,6 @@
 package com.clouway.http;
 
+import com.clouway.core.*;
 import com.google.inject.servlet.ServletModule;
 
 /**
@@ -9,6 +10,7 @@ public class HttpModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        super.configureServlets();
+        bind(IdGenerator.class).to(SessionIdGenerator.class);
+        bind(SiteMap.class).to(LabelMap.class);
     }
 }

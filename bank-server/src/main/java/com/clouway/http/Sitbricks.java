@@ -9,6 +9,6 @@ public class Sitbricks extends SitebricksModule {
 
     @Override
     protected void configureSitebricks() {
-        super.configureSitebricks();
+        scan(LoginCtrl.class.getPackage());
     }
 }
