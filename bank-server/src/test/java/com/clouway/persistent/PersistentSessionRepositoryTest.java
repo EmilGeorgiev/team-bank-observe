@@ -10,8 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.UnknownHostException;
+import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class PersistentSessionRepositoryTest {
 
@@ -24,6 +27,8 @@ public class PersistentSessionRepositoryTest {
     public void setUp() throws UnknownHostException {
 
         MongoClient mongoClient = new MongoClient();
+
+        session = new Session("username","sessionid",new Date());
 
         user = new User();
         
@@ -44,8 +49,7 @@ public class PersistentSessionRepositoryTest {
     @Test
     public void removeUserSession() {
         persistentSessionRepository.remove(session.getSessionId());
-        assertThat(db.getCollection("sessions").findOne(), nullVa
-                lue());
+        assertThat(db.getCollection("sessions").findOne(), nullValue());
     }
 
     private DBCollection sessions() {
