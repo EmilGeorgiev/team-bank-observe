@@ -21,6 +21,8 @@ public class HttpModule extends ServletModule {
         bind(Clock.class).to(CalendarUtil.class);
     }
 
+    
+    
     @Provides
     @RequestScoped
     public Session getCurrentSession(Provider<HttpServletRequest> requestProvider, SessionRepository sessionRepository, SiteMap siteMap) {
