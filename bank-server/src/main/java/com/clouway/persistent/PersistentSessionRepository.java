@@ -31,12 +31,19 @@ public class PersistentSessionRepository implements SessionRepository {
 
     @Override
     public CurrentUser getClientName(String sessionId) {
-        return new CurrentUser("Ivan");
+
+        DBObject criteria = new BasicDBObject("sid", sessionId);
+
+        DBObject projection = new BasicDBObject("username", 1);
+
+        BasicDBObject userName = (BasicDBObject) sessions().findOne(criteria, projection);
+
+        return new CurrentUser(userName.getString("username"));
     }
 
     @Override
     public void addUser(String username, String sessionId) {
-        
+
         BasicDBObject query = new BasicDBObject();
 
         query.append("username", username);
