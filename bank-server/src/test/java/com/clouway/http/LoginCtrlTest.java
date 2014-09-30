@@ -21,9 +21,9 @@ public class LoginCtrlTest {
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
-    User user;
-    LoginCtrl loginCtrl;
-    FakeHttpResponse response;
+    private User user;
+    private LoginCtrl loginCtrl;
+    private FakeHttpResponse response;
 
     @Mock
     UserRepository userRepository;

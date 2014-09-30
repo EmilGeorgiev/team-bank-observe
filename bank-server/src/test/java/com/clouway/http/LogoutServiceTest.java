@@ -3,7 +3,9 @@ package com.clouway.http;
 import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
 import com.clouway.core.SiteMap;
+import com.clouway.custommatcher.ReplyMatcher;
 import com.google.inject.Provider;
+import com.google.inject.util.Providers;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -21,10 +23,8 @@ import static org.hamcrest.core.Is.is;
  */
 public class LogoutServiceTest {
 
-    LogoutService logoutService;
-    Session session;
-    ReplyMatcher replyMatcher;
-
+    private LogoutService logoutService;
+    private Session session;
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
@@ -33,21 +33,19 @@ public class LogoutServiceTest {
     SessionRepository sessionRepository;
 
     @Mock
-    Provider<Session> currentSessionProvider;
-
-    @Mock
     SiteMap siteMap;
 
 
     @Before
     public void setUp() {
-        logoutService = new LogoutService(sessionRepository, currentSessionProvider, siteMap);
 
         String username = "Stanislav";
         String sessionId = "sessionId";
-        replyMatcher = new ReplyMatcher();
+        Date expirationTime = new Date();
 
-        session = new Session(username, sessionId, new Date());
+        session = new Session(username, sessionId, expirationTime);
+
+        logoutService = new LogoutService(sessionRepository, Providers.of(session), siteMap);
     }
 
     @Test
@@ -55,15 +53,14 @@ public class LogoutServiceTest {
 
         context.checking(new Expectations() {
             {
-                oneOf(currentSessionProvider).get();
-                will(returnValue(session));
-
-                oneOf(siteMap).loginPage();
-                will(returnValue("/bank/index.html"));
-
                 oneOf(sessionRepository).remove(session.getSessionId());
+
+                oneOf(siteMap).index();
+                will(returnValue("/bank/index.html"));
             }
         });
-        assertThat(logoutService.logout(),replyMatcher.is("/bank/index.html"));
+
+        ReplyMatcher<String> replyMatcher = new ReplyMatcher<>();
+        assertThat(logoutService.logout(), replyMatcher.matches("/bank/index.html","redirectUri"));
     }
 }

@@ -19,7 +19,7 @@ public class ReplyMatcher {
      * @param <T>
      * @return
      */
-    public <T> Matcher contains(final T expected) {
+    public <T> Matcher contains(final T expected, final String fieldName) {
 
         return new TypeSafeMatcher<Reply>() {
             @Override
@@ -30,7 +30,7 @@ public class ReplyMatcher {
                 Field field;
 
                 try {
-                    field = clazz.getDeclaredField("entity");
+                    field = clazz.getDeclaredField(fieldName);
 
                     field.setAccessible(true);
 

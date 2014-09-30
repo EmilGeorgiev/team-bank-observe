@@ -37,6 +37,6 @@ public class LogoutService {
 
         sessionRepository.remove(session.getSessionId());
 
-        return Reply.saying().redirect(siteMap.loginPage());
+        return Reply.saying().redirect(siteMap.index());
     }
 }

@@ -24,6 +24,8 @@ public class PersistentUserRepositoryTest {
     public void setUp() throws UnknownHostException {
         MongoClient mongoClient = new MongoClient();
 
+        user = new User();
+
         db = mongoClient.getDB("team-bank-test");
 
         persistentUserRepository = new PersistentUserRepository(Providers.of(db));

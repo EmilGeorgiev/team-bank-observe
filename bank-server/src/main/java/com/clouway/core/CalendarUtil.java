@@ -6,10 +6,10 @@ import java.util.Date;
 /**
  * Created by clouway on 14-9-26.
  */
-public class CalendarUtil {
+public class CalendarUtil implements Clock{
 
-    public static Date sessionExpirationTime() {
-        Calendar calendar = Calendar.getInstance();
+    @Override
+    public Date sessionExpirationTime(Calendar calendar) {
 
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.SECOND, 0);
