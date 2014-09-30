@@ -21,9 +21,9 @@ public class ReplyMatcher {
      */
     public <T> Matcher contains(final T expected, final String fieldName) {
 
-        return new TypeSafeMatcher<Reply>() {
+        return new TypeSafeMatcher<Reply<?>>() {
             @Override
-            public boolean matchesSafely(Reply actual) {
+            public boolean matchesSafely(Reply<?> actual) {
 
                 Class clazz = actual.getClass();
 
@@ -34,11 +34,9 @@ public class ReplyMatcher {
 
                     field.setAccessible(true);
 
-                    T expected1 = (T) expected;
-
                     T actual1 = (T) field.get(actual);
 
-                    return actual1.equals(expected1);
+                    return actual1.equals(expected);
 
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();

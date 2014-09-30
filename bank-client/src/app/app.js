@@ -1,4 +1,4 @@
-angular.module( 'ngBoilerplate', [
+angular.module( 'team-bank', [
   'templates-app',
   'templates-common',
   'transaction',

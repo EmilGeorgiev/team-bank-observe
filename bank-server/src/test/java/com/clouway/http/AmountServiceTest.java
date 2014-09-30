@@ -3,7 +3,6 @@ package com.clouway.http;
 import com.clouway.core.CurrentAmount;
 import com.clouway.core.CurrentUser;
 import com.clouway.core.UserRepository;
-import com.clouway.custommatcher.ReplyMatcher;
 import com.google.inject.util.Providers;
 import com.google.sitebricks.headless.Reply;
 import org.jmock.Expectations;
@@ -13,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static com.clouway.custommatcher.ReplyMatcher.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AmountServiceTest{
@@ -48,9 +48,7 @@ public class AmountServiceTest{
 
         Reply<?> reply = amountService.getCurrentAmount();
 
-        ReplyMatcher<CurrentAmount> matcher = new ReplyMatcher<>();
-
-        assertThat(reply, matcher.matches(currentAmount));
+        assertThat(reply, contains(currentAmount));
 
     }
 }

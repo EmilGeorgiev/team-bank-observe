@@ -4,7 +4,6 @@ import com.clouway.core.TransactionAmount;
 import com.clouway.core.BankRepository;
 import com.clouway.core.CurrentUser;
 import com.clouway.core.TransactionInfo;
-import com.clouway.custommatcher.ReplyMatcher;
 import com.clouway.http.fake.FakeRequestReader;
 import com.google.inject.util.Providers;
 import com.google.sitebricks.headless.Reply;
@@ -16,6 +15,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static com.clouway.custommatcher.ReplyMatcher.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -27,7 +27,6 @@ public class BankServiceTest {
     private FakeRequestReader fakeRequestReader;
     private TransactionInfo transactionInfo;
     private TransactionAmount transactionAmount;
-    private ReplyMatcher<TransactionInfo> replyMatcher = new ReplyMatcher<>();
     private CurrentUser currentUser;
 
 
@@ -66,7 +65,7 @@ public class BankServiceTest {
 
         Reply<?> reply = bankService.deposit(request);
 
-        assertThat(reply, replyMatcher.matches(transactionInfo));
+        assertThat(reply, contains(transactionInfo));
 
     }
 
@@ -85,7 +84,7 @@ public class BankServiceTest {
 
         Reply<?> reply = bankService.withdraw(request);
 
-        assertThat(reply, replyMatcher.matches(transactionInfo));
+        assertThat(reply, contains(transactionInfo));
     }
 
     private String message(String message) {
