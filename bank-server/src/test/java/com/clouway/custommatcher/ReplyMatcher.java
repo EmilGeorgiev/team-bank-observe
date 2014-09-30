@@ -10,9 +10,16 @@ import java.lang.reflect.Field;
 /**
  * Created by emil on 14-9-27.
  */
-public class ReplayMatcher<T> {
+public class ReplyMatcher {
 
-    public Matcher matches(final Object expected) {
+
+    /**
+     * Equals contain on the <code>Reply</code> with given object.
+     * @param expected object who check whether is contain in Reply.
+     * @param <T>
+     * @return
+     */
+    public <T> Matcher contains(final T expected) {
 
         return new TypeSafeMatcher<Reply>() {
             @Override
@@ -46,4 +53,4 @@ public class ReplayMatcher<T> {
             }
         };
     }
-}
+ }

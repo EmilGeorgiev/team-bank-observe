@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 
 public class PersistentSessionRepositoryTest {
 
-    private PersistentSessionRepository persistentUserRepository;
+    private PersistentSessionRepository persistentSessionRepository;
     private DB db;
 
     @Before
@@ -20,7 +20,7 @@ public class PersistentSessionRepositoryTest {
 
         db = mongoClient.getDB("team-bank-test");
 
-        persistentUserRepository = new PersistentSessionRepository(Providers.of(db));
+        persistentSessionRepository = new PersistentSessionRepository(Providers.of(db));
 
         sessions().drop();
 
