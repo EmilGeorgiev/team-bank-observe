@@ -60,7 +60,7 @@ public class LogoutServiceTest {
             }
         });
 
-        ReplyMatcher<String> replyMatcher = new ReplyMatcher<>();
-        assertThat(logoutService.logout(), replyMatcher.matches("/bank/index.html","redirectUri"));
+        ReplyMatcher replyMatcher = new ReplyMatcher();
+        assertThat(logoutService.logout(), replyMatcher.contains("/bank/index.html","redirectUri"));
     }
 }
