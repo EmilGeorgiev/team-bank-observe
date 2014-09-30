@@ -53,7 +53,7 @@ public class BankRepositoryRepositoryTest {
 
 
     @Test
-    public void makeTwoDepositTransaction() throws Exception {
+    public void makeTwoDepositTransactions() throws Exception {
 
         pretendThat(clientName("Emil"), amount(100d));
 

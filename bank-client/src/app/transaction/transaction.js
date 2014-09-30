@@ -32,8 +32,8 @@ angular.module('transaction', ['ui.router'])
                 $scope.errorMessage = resp;
             });
 
-        $scope.doDeposit = function(amount) {
-            bankService.doDeposit(amount)
+        $scope.deposit = function(amount) {
+            bankService.deposit(amount)
                 .success(function(data) {
                     $scope.currentAmount = data.amount;
                 })
@@ -42,9 +42,9 @@ angular.module('transaction', ['ui.router'])
                 });
         };
 
-        $scope.doWithdraw = function(amount) {
+        $scope.withdraw = function(amount) {
 
-            bankService.doWithdraw(amount)
+            bankService.withdraw(amount)
                 .success(function(data) {
                     $scope.currentAmount = data.amount;
                     console.log($scope.currentAmount);
@@ -62,11 +62,11 @@ angular.module('transaction', ['ui.router'])
                 return $http.post("/amount");
             },
 
-            doDeposit: function(amount) {
+            deposit: function(amount) {
                 return $http.post('/bankService/deposit', {amount: amount});
             },
 
-            doWithdraw: function(amount) {
+            withdraw: function(amount) {
                 return $http.post("/bankService/withdraw", {amount: amount});
             }
         };

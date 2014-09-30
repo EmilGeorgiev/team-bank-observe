@@ -72,7 +72,7 @@ describe('Transaction module', function() {
 
             httpBackend.expectPOST('/bankService/deposit', {amount: 70}).respond({amount: 120});
 
-            scope.doDeposit(70);
+            scope.deposit(70);
 
             httpBackend.flush();
 
@@ -83,7 +83,7 @@ describe('Transaction module', function() {
         it('"/bankService should fail"', function() {
             httpBackend.expectPOST('/bankService/deposit', {amount: 34}).respond(404, "Not found");
 
-            scope.doDeposit(34);
+            scope.deposit(34);
 
             httpBackend.flush();
 
@@ -95,7 +95,7 @@ describe('Transaction module', function() {
 
             httpBackend.expectPOST('/bankService/withdraw', {amount: 60}).respond({amount: 30});
 
-            scope.doWithdraw(60);
+            scope.withdraw(60);
 
             httpBackend.flush();
 
@@ -107,7 +107,7 @@ describe('Transaction module', function() {
 
             httpBackend.expectPOST('/bankService/withdraw', {amount: 60}).respond(400, "Not enough many in account");
 
-            scope.doWithdraw(60);
+            scope.withdraw(60);
 
             httpBackend.flush();
 
