@@ -1,0 +1,30 @@
+form > div {
+    position: relative;
+    overflow: hidden;
+}
+form input:focus + label{
+    background: #357EBD;
+    color: white;
+    font-size: 70%;
+    padding: 1px 6px;
+    z-index: 2;
+    text-transform: uppercase;
+}
+form label {
+    transition: background 1.2s, right 0.3s, left 0.2s;
+    position: absolute;
+    color: #999;
+    font-weight: normal;
+}
+form.go-right label {
+    border-radius: 0 5px 5px 0;
+    height: 100%;
+    right: 100%;
+    width: 100%;
+    margin-right: -100%;
+}
+form.go-right input:focus + label{
+    right: 0;
+    margin-right: 0;
+    width: 40%;
+}
