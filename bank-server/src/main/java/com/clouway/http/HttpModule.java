@@ -25,7 +25,20 @@ public class HttpModule extends ServletModule {
         bind(Clock.class).to(CalendarUtil.class);
     }
 
-    
+    @Provides
+    public TransactionMessages getTransactionMessages() {
+        return new TransactionMessages() {
+            @Override
+            public String success() {
+                return "Transaction success";
+            }
+
+            @Override
+            public String failed() {
+                return "Transaction failed";
+            }
+        };
+    }
     
     @Provides
     @RequestScoped

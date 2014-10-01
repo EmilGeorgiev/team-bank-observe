@@ -1,9 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.core.TransactionAmount;
-import com.clouway.core.BankRepository;
-import com.clouway.core.CurrentUser;
-import com.clouway.core.TransactionInfo;
+import com.clouway.core.*;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.sitebricks.At;
@@ -21,22 +18,23 @@ import com.google.sitebricks.http.Post;
 public class BankService {
 
     private final BankRepository bankRepository;
-    private final Provider<CurrentUser> currentUser;
+    private final CurrentUser currentUser;
 
     @Inject
-    public BankService(BankRepository bankRepository, Provider<CurrentUser> currentUser) {
+    public BankService(BankRepository bankRepository, Provider<CurrentUser> currentUserProvider) {
 
         this.bankRepository = bankRepository;
-        this.currentUser = currentUser;
+        this.currentUser = currentUserProvider.get();
+
     }
 
     @At("/deposit")
     @Post
     public Reply<?> deposit(Request request) {
 
-        TransactionAmount transactionAmount = request.read(TransactionAmount.class).as(Json.class);
+        Amount amount = request.read(Amount.class).as(Json.class);
 
-        TransactionInfo info = bankRepository.deposit(currentUser.get().getName(), transactionAmount.getAmount());
+        TransactionInfo info = bankRepository.deposit(amount.getAmount());
 
         return Reply.with(info).as(Json.class);
     }
@@ -45,10 +43,20 @@ public class BankService {
     @Post
     public Reply<?> withdraw(Request request) {
 
-        TransactionAmount transactionAmount = request.read(TransactionAmount.class).as(Json.class);
+        Amount amount = request.read(Amount.class).as(Json.class);
 
-        TransactionInfo info = bankRepository.withdraw(currentUser.get().getName(), transactionAmount.getAmount());
+        TransactionInfo info = bankRepository.withdraw(amount.getAmount());
 
         return Reply.with(info).as(Json.class);
+    }
+
+    @At("/getAmount")
+    @Post
+    public Reply<?> getCurrentAmount() {
+
+        Amount amount = bankRepository.getAmountBy(currentUser.getName());
+
+        return Reply.with(amount).as(Json.class);
+
     }
 }

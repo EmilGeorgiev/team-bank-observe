@@ -3,15 +3,15 @@ package com.clouway.core;
 /**
  * Created by emil on 14-9-25.
  */
-public class TransactionAmount {
+public class Amount {
     private double amount;
 
-    public TransactionAmount(double amount) {
+    public Amount(double amount) {
 
         this.amount = amount;
     }
 
-    public TransactionAmount() {
+    public Amount() {
     }
 
     public double getAmount() {

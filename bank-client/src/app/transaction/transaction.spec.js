@@ -36,7 +36,7 @@ describe('Transaction module', function() {
 
             httpBackend = $httpBackend;
 
-            authRequestHandler = httpBackend.expectPOST('/amount');
+            authRequestHandler = httpBackend.expectPOST('/bankService/getAmount');
             authRequestHandler.respond({amount: 50});
 
             scope = $rootScope.$new();
@@ -50,13 +50,13 @@ describe('Transaction module', function() {
             httpBackend.verifyNoOutstandingRequest();
         });
 
-        it('"/amount" service for get current amount on the client', function() {
+        it('"/bankService/getAmount" service for get current amount on the client', function() {
             httpBackend.flush();
 
             expect(scope.currentAmount).toBe(50);
         });
 
-        it('"/amount" service should fail', function() {
+        it('"/bankService/getAmount" service should fail', function() {
             authRequestHandler.respond(404, "Not found");
 
             httpBackend.flush();

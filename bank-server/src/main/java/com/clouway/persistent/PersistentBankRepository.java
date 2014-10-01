@@ -1,7 +1,6 @@
 package com.clouway.persistent;
 
-import com.clouway.core.BankRepository;
-import com.clouway.core.TransactionInfo;
+import com.clouway.core.*;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.mongodb.BasicDBObject;
@@ -14,74 +13,88 @@ import com.mongodb.DBObject;
  */
 public class PersistentBankRepository implements BankRepository {
     private final Provider<DB> dbProvider;
+    private CurrentUser currentUser;
+    private TransactionMessages transactionMessages;
 
     @Inject
-    public PersistentBankRepository(Provider<DB> dbProvider) {
+    public PersistentBankRepository(Provider<DB> dbProvider,
+                                    Provider<CurrentUser> currentUserProvider,
+                                    Provider<TransactionMessages> transactionMessagesProvider) {
 
         this.dbProvider = dbProvider;
+        this.currentUser = currentUserProvider.get();
+        this.transactionMessages = transactionMessagesProvider.get();
     }
 
     /**
      * Deposit amount in client account.
-     * @param clientName name of the client who do transaction
      * @param amount amount who add in account
      * @return info for transaction and new current amount on the client
      */
     @Override
-    public TransactionInfo deposit(String clientName, double amount) {
+    public TransactionInfo deposit(double amount) {
 
-        DBObject query = new BasicDBObject("name", clientName);
+        DBObject query = new BasicDBObject("name", currentUser.getName());
 
         DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", amount));
 
-        users().update(query, update);
+        bankAccounts().update(query, update);
 
-        return new TransactionInfo("Success", getAmountBy(clientName));
+        return new TransactionInfo(transactionMessages.success(), getAmountBy(currentUser.getName()).getAmount());
     }
 
     /**
      * Withdraw amount from client account.If amount who withdraw is greater than current amount
      * transaction is failed.
-     * @param clientName name of the client who do transaction
      * @param amount amount who withdraw from account
      * @return info object for transaction and new current amount on the client.
      */
     @Override
-    public TransactionInfo withdraw(String clientName, double amount) {
+    public TransactionInfo withdraw(double amount) {
 
-        Double currentAmount = getAmountBy(clientName);
+        Double currentAmount = getCurrentAmount(currentUser.getName());
 
         if(currentAmount < amount) {
-            return new TransactionInfo("Error", currentAmount);
+            return new TransactionInfo(transactionMessages.failed(), currentAmount);
         }
 
-        DBObject query = new BasicDBObject("name", clientName);
+        DBObject query = new BasicDBObject("name", currentUser.getName());
 
         DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", -amount));
 
-        users().update(query, update);
+        bankAccounts().update(query, update);
 
-        return new TransactionInfo("Success", getAmountBy(clientName));
-
+        return new TransactionInfo(transactionMessages.success(), getCurrentAmount(currentUser.getName()));
 
     }
 
     @Override
-    public double getAmountBy(String clientName) {
+    public Amount getAmountBy(String clientName) {
 
         DBObject criteria = new BasicDBObject("name", clientName);
 
         DBObject projection = new BasicDBObject("amount", 1)
                 .append("_id", 0);
 
-        BasicDBObject amount = (BasicDBObject) users().findOne(criteria, projection);
+        BasicDBObject dbObject = (BasicDBObject) bankAccounts().findOne(criteria, projection);
 
-        return amount.getDouble("amount");
+        return  new Amount(dbObject.getDouble("amount"));
 
     }
 
-    private DBCollection users() {
-        return dbProvider.get().getCollection("users");
+    private Double getCurrentAmount(String username) {
+        DBObject criteria = new BasicDBObject("name", username);
+
+        DBObject projection = new BasicDBObject("amount", 1)
+                .append("_id", 0);
+
+        BasicDBObject dbObject = (BasicDBObject) bankAccounts().findOne(criteria, projection);
+
+        return  dbObject.getDouble("amount");
+    }
+
+    private DBCollection bankAccounts() {
+        return dbProvider.get().getCollection("bank_accounts");
     }
 
 

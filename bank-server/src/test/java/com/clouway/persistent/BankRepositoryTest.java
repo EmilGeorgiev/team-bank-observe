@@ -1,6 +1,8 @@
 package com.clouway.persistent;
 
+import com.clouway.core.CurrentUser;
 import com.clouway.core.TransactionInfo;
+import com.clouway.core.TransactionMessages;
 import com.clouway.persistent.util.BankUtil;
 import com.google.inject.util.Providers;
 import com.mongodb.DB;
@@ -17,11 +19,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Created by emil on 14-9-25.
  */
-public class BankRepositoryRepositoryTest {
+public class BankRepositoryTest {
 
     private PersistentBankRepository persistentBankRepository;
     private BankUtil bankUtil;
     private DB db;
+    private CurrentUser currentUser;
+
+    private TransactionMessages transactionMessages = new TransactionMessages() {
+        @Override
+        public String success() {
+            return "Success";
+        }
+
+        @Override
+        public String failed() {
+            return "Failed";
+        }
+    };
 
 
     @Before
@@ -30,11 +45,15 @@ public class BankRepositoryRepositoryTest {
 
         db = mongoClient.getDB("team-bank-test");
 
-        persistentBankRepository = new PersistentBankRepository(Providers.of(db));
+        currentUser = new CurrentUser("Ivan");
+
+        persistentBankRepository = new PersistentBankRepository(Providers.of(db),
+                Providers.of(currentUser),
+                Providers.of(transactionMessages));
 
         bankUtil = new BankUtil(db);
 
-        clients().drop();
+        bankAccounts().drop();
     }
 
 
@@ -44,7 +63,7 @@ public class BankRepositoryRepositoryTest {
 
         pretendThat(clientName("Ivan"), amount(100d));
 
-        TransactionInfo info = persistentBankRepository.deposit("Ivan", 20d);
+        TransactionInfo info = persistentBankRepository.deposit(20d);
 
         assertThat(info.message, is("Success"));
         assertThat(info.amount, is(120d));
@@ -55,10 +74,10 @@ public class BankRepositoryRepositoryTest {
     @Test
     public void makeTwoDepositTransactions() throws Exception {
 
-        pretendThat(clientName("Emil"), amount(100d));
+        pretendThat(clientName("Ivan"), amount(100d));
 
-        persistentBankRepository.deposit("Emil", 20d);
-        TransactionInfo info = persistentBankRepository.deposit("Emil", 80d);
+        persistentBankRepository.deposit(20d);
+        TransactionInfo info = persistentBankRepository.deposit(80d);
 
         assertThat(info.message, is("Success"));
         assertThat(info.amount, is(200d));
@@ -68,9 +87,9 @@ public class BankRepositoryRepositoryTest {
     @Test
     public void withdrawAmount() throws Exception {
 
-        pretendThat(clientName("Test"), amount(200d));
+        pretendThat(clientName("Ivan"), amount(200d));
 
-        TransactionInfo info = persistentBankRepository.withdraw("Test", 120d);
+        TransactionInfo info = persistentBankRepository.withdraw(120d);
 
         assertThat(info.message, is("Success"));
         assertThat(info.amount, is(80d));
@@ -80,17 +99,17 @@ public class BankRepositoryRepositoryTest {
     @Test
     public void withdrawMoreThanWeHave() throws Exception {
 
-        pretendThat(clientName("Petar"), amount(100d));
+        pretendThat(clientName("Ivan"), amount(100d));
 
-        TransactionInfo info = persistentBankRepository.withdraw("Petar", 200d);
+        TransactionInfo info = persistentBankRepository.withdraw(200d);
 
-        assertThat(info.message, is("Error"));
+        assertThat(info.message, is("Failed"));
         assertThat(info.amount, is(100d));
 
     }
 
     private void pretendThat(String clientName, double amount) {
-        bankUtil.deposit(clientName, amount);
+        bankUtil.registerNewUser(clientName, amount);
     }
 
     private String clientName(String name) {
@@ -101,7 +120,7 @@ public class BankRepositoryRepositoryTest {
         return amount;
     }
 
-    private DBCollection clients() {
-        return db.getCollection("users");
+    private DBCollection bankAccounts() {
+        return db.getCollection("bank_accounts");
     }
 }

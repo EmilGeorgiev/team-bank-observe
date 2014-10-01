@@ -59,7 +59,7 @@ angular.module('transaction', ['ui.router'])
 
         return {
             fetchCurrentAmount: function() {
-                return $http.post("/amount");
+                return $http.post("/bankService/getAmount");
             },
 
             deposit: function(amount) {

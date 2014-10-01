@@ -32,7 +32,7 @@ public class PersistentSessionRepository implements SessionRepository {
     @Override
     public CurrentUser getClientName(String sessionId) {
 
-        DBObject criteria = new BasicDBObject("sid", sessionId);
+        DBObject criteria = new BasicDBObject("sessionId", sessionId);
 
         DBObject projection = new BasicDBObject("username", 1);
 

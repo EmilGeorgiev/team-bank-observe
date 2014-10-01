@@ -1,6 +1,5 @@
 package com.clouway.persistent;
 
-import com.clouway.core.CurrentAmount;
 import com.clouway.persistent.util.UserUtil;
 import com.clouway.core.User;
 import com.google.inject.util.Providers;
@@ -43,34 +42,12 @@ public class PersistentUserRepositoryTest {
         assertThat(persistentUserRepository.isAuthorised(user), is(false));
     }
 
-    @Test
-    public void userIsAuthorised() {
-        user.setUsername("Brahmaputra");
-        user.setPassword("123456");
-        assertThat(persistentUserRepository.isAuthorised(user), is(true));
-    }
-
-    @Test
-    public void getUserName() throws Exception {
-        pretendThat(userName("Ivan"), amount(40));
-
-        CurrentAmount currentAmount = persistentUserRepository.getAmountBy("Ivan");
-
-        assertThat(currentAmount.getAmount(), is(40d));
-
-    }
-
-    private double amount(int amount) {
-        return amount;
-    }
-
-    private void pretendThat(String name, double amount) {
-        userUtil.registerClient(name, amount);
-    }
-
-    private String userName(String name) {
-        return name;
-    }
+//    @Test
+//    public void userIsAuthorised() {
+//        user.setUsername("Brahmaputra");
+//        user.setPassword("123456");
+//        assertThat(persistentUserRepository.isAuthorised(user), is(true));
+//    }
 
     private DBCollection users() {
         return db.getCollection("users");

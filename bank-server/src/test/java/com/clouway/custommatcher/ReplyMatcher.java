@@ -19,7 +19,7 @@ public class ReplyMatcher {
      * @param <T>
      * @return
      */
-    public <T> Matcher contains(final T expected, final String fieldName) {
+    public static <T> Matcher contains(final T expected, final String fieldName) {
 
         return new TypeSafeMatcher<Reply<?>>() {
             @Override

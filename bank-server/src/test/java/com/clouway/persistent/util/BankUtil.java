@@ -21,14 +21,14 @@ public class BankUtil {
      * @param clientName name of the ne client
      * @param amount amount of the new client
      */
-    public void deposit(String clientName, double amount) {
+    public void registerNewUser(String clientName, double amount) {
         DBObject query = new BasicDBObject("name", clientName)
                 .append("amount", amount);
 
-        users().insert(query);
+        bankAccounts().insert(query);
     }
 
-    private DBCollection users() {
-        return db.getCollection("users");
+    private DBCollection bankAccounts() {
+        return db.getCollection("bank_accounts");
     }
 }

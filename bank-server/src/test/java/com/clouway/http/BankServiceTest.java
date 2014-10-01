@@ -1,9 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.core.TransactionAmount;
-import com.clouway.core.BankRepository;
-import com.clouway.core.CurrentUser;
-import com.clouway.core.TransactionInfo;
+import com.clouway.core.*;
 import com.clouway.http.fake.FakeRequestReader;
 import com.google.inject.util.Providers;
 import com.google.sitebricks.headless.Reply;
@@ -26,9 +23,7 @@ public class BankServiceTest {
     private BankService bankService;
     private FakeRequestReader fakeRequestReader;
     private TransactionInfo transactionInfo;
-    private TransactionAmount transactionAmount;
-    private CurrentUser currentUser;
-
+    private Amount amount;
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
@@ -42,10 +37,14 @@ public class BankServiceTest {
     @Before
     public void setUp() {
 
-        currentUser = new CurrentUser("Ivan");
-        transactionAmount = new TransactionAmount(100d);
+        amount = new Amount(100d);
+
+        CurrentUser currentUser = new CurrentUser("Ivan");
+
         bankService = new BankService(bankRepository, Providers.of(currentUser));
-        fakeRequestReader = new FakeRequestReader(currentUser.getName(), transactionAmount.getAmount());
+
+        fakeRequestReader = new FakeRequestReader(currentUser.getName(), amount.getAmount());
+
         transactionInfo = new TransactionInfo(message("Success"), amount(100d));
 
     }
@@ -55,17 +54,17 @@ public class BankServiceTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(request).read(TransactionAmount.class);
+            oneOf(request).read(Amount.class);
             will(returnValue(fakeRequestReader));
 
-            oneOf(bankRepository).deposit(clientName("Ivan"), amount(100d));
+            oneOf(bankRepository).deposit(amount(100d));
             will(returnValue(transactionInfo));
         }
         });
 
         Reply<?> reply = bankService.deposit(request);
 
-        assertThat(reply, contains(transactionInfo));
+        assertThat(reply, contains(transactionInfo, "entity"));
 
     }
 
@@ -74,17 +73,33 @@ public class BankServiceTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(request).read(TransactionAmount.class);
+            oneOf(request).read(Amount.class);
             will(returnValue(fakeRequestReader));
 
-            oneOf(bankRepository).withdraw(clientName("Ivan"), amount(100d));
+            oneOf(bankRepository).withdraw(amount(100d));
             will(returnValue(transactionInfo));
         }
         });
 
         Reply<?> reply = bankService.withdraw(request);
 
-        assertThat(reply, contains(transactionInfo));
+        assertThat(reply, contains(transactionInfo, "entity"));
+    }
+
+    @Test
+    public void getCurrentAmountOnUser() throws Exception {
+
+        context.checking(new Expectations() {{
+
+            oneOf(bankRepository).getAmountBy("Ivan");
+            will(returnValue(amount));
+        }
+        });
+
+        Reply<?> reply = bankService.getCurrentAmount();
+
+        assertThat(reply, contains(amount, "entity"));
+
     }
 
     private String message(String message) {
@@ -95,7 +110,4 @@ public class BankServiceTest {
         return amount;
     }
 
-    private String clientName(String name) {
-        return name;
-    }
 }

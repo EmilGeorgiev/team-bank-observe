@@ -1,6 +1,6 @@
 package com.clouway.http.fake;
 
-import com.clouway.core.TransactionAmount;
+import com.clouway.core.Amount;
 
 import static com.google.sitebricks.headless.Request.*;
 
@@ -19,6 +19,6 @@ public class FakeRequestReader implements RequestRead {
 
     @Override
     public Object as(Class aClass) {
-        return new TransactionAmount(amount);
+        return new Amount(amount);
     }
 }

@@ -20,7 +20,6 @@ public class Sitbricks extends SitebricksModule {
         scan(LoginCtrl.class.getPackage());
         
         at("/bankService").serve(BankService.class);
-        at("/amount").serve(AmountService.class);
     }
 
     @Provides
