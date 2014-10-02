@@ -26,19 +26,12 @@ angular.module('transaction', ['ui.router'])
         bankService.fetchCurrentAmount()
             .success(function(data) {
                 $scope.currentAmount = data.amount;
-            })
-            .error(function(resp) {
-                console.log("error");
-                $scope.errorMessage = resp;
             });
 
         $scope.deposit = function(amount) {
             bankService.deposit(amount)
                 .success(function(data) {
                     $scope.currentAmount = data.amount;
-                })
-                .error(function(resp) {
-                    $scope.errorMessage = resp;
                 });
         };
 
@@ -47,10 +40,6 @@ angular.module('transaction', ['ui.router'])
             bankService.withdraw(amount)
                 .success(function(data) {
                     $scope.currentAmount = data.amount;
-                    console.log($scope.currentAmount);
-                })
-                .error(function(reason) {
-                    $scope.errorMessage = reason;
                 });
         };
     }])

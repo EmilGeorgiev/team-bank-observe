@@ -43,7 +43,7 @@
     </script>
 </head>
 <body>
-<div class="row">
+<div>
     <div class="navbar navbar-default">
         <div class="collapse navbar-collapse" collapse="menuCollapsed">
             <ul class="nav navbar-nav">
@@ -54,7 +54,7 @@
                     </a>
                 </li>
                 <li ng-controller="logoutController">
-                    <a id="logout" class="btn btn-default col-md-offset-12" ng-click="logout()">
+                    <a id="logout" class="btn btn-default col-md-offset-20" ng-click="logout()">
                         <i class="fa fa-home"></i>
                         Logout
                     </a>
@@ -64,14 +64,7 @@
     </div>
 </div>
 
-<div class="container" ui-view="main"></div>
+<div class="input-group" ui-view="main"></div>
 
-<footer class="footer">
-    <div class="container">
-        <div class="footer-inner">
-
-        </div>
-    </div>
-</footer>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.clouway.http;
 import com.clouway.core.*;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;
 import com.google.sitebricks.headless.Reply;
@@ -15,6 +16,7 @@ import com.google.sitebricks.http.Post;
  */
 @At("/bankService")
 @Service
+@Singleton
 public class BankService {
 
     private final BankRepository bankRepository;

@@ -4,7 +4,6 @@ import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
 import com.clouway.core.SiteMap;
 import com.clouway.custommatcher.ReplyMatcher;
-import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;

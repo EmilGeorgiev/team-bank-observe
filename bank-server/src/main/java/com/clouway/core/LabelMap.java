@@ -16,7 +16,7 @@ public class LabelMap implements SiteMap{
 
     @Override
     public String loginPage() {
-        return "login.html";
+        return "../login.html";
     }
 
     @Override
