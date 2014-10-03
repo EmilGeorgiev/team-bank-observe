@@ -58,10 +58,8 @@ public class SecurityFilterTest {
                 oneOf(request).getCookies();
                 will(returnValue(cookies));
 
-                oneOf(sessionRepository).authenticate(sessionID("abc"));
-                will(returnValue(false));
-
-                oneOf(response).setStatus(401);
+                oneOf(sessionRepository).authenticate(sessionID(sid("abc")));
+                will(returnValue(true));
 
                 oneOf(filterChain).doFilter(request, response);
 
@@ -81,9 +79,15 @@ public class SecurityFilterTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(sessionRepository).remove("abc");
+            oneOf(request).getCookies();
+            will(returnValue(cookies));
+
+            oneOf(sessionRepository).authenticate(sessionID(sid("abc")));
+            will(returnValue(false));
 
             oneOf(response).setStatus(401);
+
+            oneOf(filterChain).doFilter(request, response);
         }
         });
 
@@ -93,10 +97,6 @@ public class SecurityFilterTest {
 
     private String sid(String sid) {
         return sid;
-    }
-
-    private String username(String name) {
-        return name;
     }
 
     private String sessionID(String session) {
