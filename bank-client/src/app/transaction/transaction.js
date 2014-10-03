@@ -4,6 +4,7 @@
 angular.module('transaction', ['ui.router'])
 
     .config(['$stateProvider', function($stateProvider) {
+
         $stateProvider.state('transaction', {
             url: '/transaction',
             views: {
@@ -60,4 +61,25 @@ angular.module('transaction', ['ui.router'])
             }
         };
 
-    }]);
+    }])
+
+.directive('amountValidator', function () {
+
+        var regexp = /^[1-9][0-9]*(\.[0-9]{1,2})?$/;
+
+        return {
+            require: 'ngModel',
+            link: function (scope, elm, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
+                    if(regexp.test(viewValue)){
+                        ctrl.$setValidity('float', true);
+                        return parseFloat(viewValue.replace(',', '.'));
+                    }
+                    else{
+                        ctrl.$setValidity('float', false);
+                        return undefined;
+                    }
+                });
+            }
+        };
+    });

@@ -10,17 +10,27 @@ public class LabelMap implements SiteMap{
     }
 
     @Override
-    public String authenticationError() {
-        return "/authenticationError.html";
-    }
-
-    @Override
     public String loginPage() {
-        return "../login.html";
+        return "/login";
     }
 
     @Override
     public String index() {
         return "/bin/index.html";
+    }
+
+    @Override
+    public String registrationError() {
+        return "Registration Failed";
+    }
+
+    @Override
+    public String loginFailed() {
+        return "Login Failed";
+    }
+
+    @Override
+    public String transactionError() {
+        return "Transaction error";
     }
 }

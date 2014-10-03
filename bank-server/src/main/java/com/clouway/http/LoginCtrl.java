@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.sitebricks.At;
 import com.google.sitebricks.Show;
+import com.google.sitebricks.http.Get;
 import com.google.sitebricks.http.Post;
 
 import javax.servlet.http.Cookie;
@@ -23,6 +24,7 @@ public class LoginCtrl {
     private SessionRepository sessionRepository;
     private IdGenerator idGenerator;
     private SiteMap siteMap;
+    private String error;
     private User user = new User();
 
     @Inject
@@ -34,17 +36,22 @@ public class LoginCtrl {
         this.siteMap = siteMap;
     }
 
+    @Get
+    public void clear(){
+        error = null;
+    }
+
     @Post
     public String authorise(HttpServletResponse response) {
 
         if (!userRepository.isAuthorised(user)) {
-            return siteMap.authenticationError();
+            error = siteMap.loginFailed();
+            return null;
         }
 
         String sessionId = idGenerator.generateFor(user);
         sessionRepository.addUser(user.getUsername(), sessionId);
         response.addCookie(new Cookie(siteMap.sessionCookieName(), sessionId));
-
         return siteMap.index();
     }
 
@@ -54,5 +61,9 @@ public class LoginCtrl {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getError() {
+        return error;
     }
 }

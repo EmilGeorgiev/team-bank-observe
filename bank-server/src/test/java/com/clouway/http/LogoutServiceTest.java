@@ -5,6 +5,7 @@ import com.clouway.core.SessionRepository;
 import com.clouway.core.SiteMap;
 import com.clouway.custommatcher.ReplyMatcher;
 import com.google.inject.util.Providers;
+import com.google.sitebricks.headless.Reply;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static com.clouway.custommatcher.ReplyMatcher.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -54,12 +56,11 @@ public class LogoutServiceTest {
             {
                 oneOf(sessionRepository).remove(session.getSessionId());
 
-                oneOf(siteMap).index();
-                will(returnValue("/bank/index.html"));
+                oneOf(siteMap).loginPage();
+                will(returnValue("/login"));
             }
         });
 
-        ReplyMatcher replyMatcher = new ReplyMatcher();
-        assertThat(logoutService.logout(), replyMatcher.contains("/bank/index.html","redirectUri"));
+        assertThat(logoutService.logout(), contains("/login"));
     }
 }

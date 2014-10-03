@@ -34,7 +34,6 @@ public class Sitbricks extends SitebricksModule {
                 }
             }
         }
-
         return null;
     }
 }

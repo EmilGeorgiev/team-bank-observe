@@ -7,9 +7,13 @@ public interface SiteMap {
 
     String sessionCookieName();
 
-    String authenticationError();
-
     String loginPage();
 
     String index();
+
+    String registrationError();
+
+    String loginFailed();
+
+    String transactionError();
 }

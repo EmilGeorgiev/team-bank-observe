@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class PersistentUserRepositoryTest {
 
@@ -35,6 +36,7 @@ public class PersistentUserRepositoryTest {
         userUtil = new UserUtil(db);
 
         users().drop();
+        accounts().drop();
     }
 
     @Test
@@ -42,15 +44,28 @@ public class PersistentUserRepositoryTest {
         assertThat(persistentUserRepository.isAuthorised(user), is(false));
     }
 
-//    @Test
-//    public void userIsAuthorised() {
-//        user.setUsername("Brahmaputra");
-//        user.setPassword("123456");
-//        assertThat(persistentUserRepository.isAuthorised(user), is(true));
-//    }
+    @Test
+    public void userIsAuthorised() {
+        user.setUsername("Brahmaputra");
+        user.setPassword("123456");
+        persistentUserRepository.add(user);
+        assertThat(persistentUserRepository.isAuthorised(user), is(true));
+    }
+
+    @Test
+    public void userBankAccountWasCreatedAfterRegistration() {
+        user.setUsername("Ivan");
+        user.setPassword("123456");
+        persistentUserRepository.add(user);
+        assertThat(accounts().findOne(), notNullValue());
+    }
 
     private DBCollection users() {
         return db.getCollection("users");
+    }
+
+    private DBCollection accounts(){
+        return db.getCollection("bank_accounts");
     }
 
 }

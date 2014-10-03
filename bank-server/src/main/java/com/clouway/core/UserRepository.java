@@ -6,4 +6,8 @@ package com.clouway.core;
 public interface UserRepository {
 
     boolean isAuthorised(User user);
+
+    boolean exists(String username);
+
+    void add(User user);
 }

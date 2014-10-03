@@ -34,6 +34,12 @@ public class BankServiceTest {
     @Mock
     private Request request = null;
 
+    @Mock
+    private BankValidator validator;
+
+    @Mock
+    private SiteMap siteMap;
+
     @Before
     public void setUp() {
 
@@ -41,7 +47,7 @@ public class BankServiceTest {
 
         CurrentUser currentUser = new CurrentUser("Ivan");
 
-        bankService = new BankService(bankRepository, Providers.of(currentUser));
+        bankService = new BankService(bankRepository, Providers.of(currentUser), validator, siteMap);
 
         fakeRequestReader = new FakeRequestReader(currentUser.getName(), amount.getAmount());
 
@@ -50,12 +56,15 @@ public class BankServiceTest {
     }
 
     @Test
-    public void depositAmount() throws Exception {
+    public void depositAmount() {
 
         context.checking(new Expectations() {{
 
             oneOf(request).read(Amount.class);
             will(returnValue(fakeRequestReader));
+
+            oneOf(validator).transactionIsValid(amount);
+            will(returnValue(true));
 
             oneOf(bankRepository).deposit(amount(100d));
             will(returnValue(transactionInfo));
@@ -64,17 +73,39 @@ public class BankServiceTest {
 
         Reply<?> reply = bankService.deposit(request);
 
-        assertThat(reply, contains(transactionInfo, "entity"));
+        assertThat(reply, contains(transactionInfo));
 
     }
 
     @Test
-    public void withdrawAmount() throws Exception {
+    public void failToDeposit() {
+
+        context.checking(new Expectations(){
+            {
+                oneOf(request).read(Amount.class);
+                will(returnValue(fakeRequestReader));
+
+                oneOf(validator).transactionIsValid(amount);
+                will(returnValue(false));
+
+                oneOf(siteMap).transactionError();
+                will(returnValue("error"));
+            }
+        });
+        Reply<?>reply = bankService.deposit(request);
+        assertThat(reply, contains("error"));
+    }
+
+    @Test
+    public void withdrawAmount() {
 
         context.checking(new Expectations() {{
 
             oneOf(request).read(Amount.class);
             will(returnValue(fakeRequestReader));
+
+            oneOf(validator).transactionIsValid(amount);
+            will(returnValue(true));
 
             oneOf(bankRepository).withdraw(amount(100d));
             will(returnValue(transactionInfo));
@@ -83,11 +114,32 @@ public class BankServiceTest {
 
         Reply<?> reply = bankService.withdraw(request);
 
-        assertThat(reply, contains(transactionInfo, "entity"));
+        assertThat(reply, contains(transactionInfo));
     }
 
     @Test
-    public void getCurrentAmountOnUser() throws Exception {
+    public void withdrawFailed() {
+
+        context.checking(new Expectations(){
+            {
+                oneOf(request).read(Amount.class);
+                will(returnValue(fakeRequestReader));
+
+                oneOf(validator).transactionIsValid(amount);
+                will(returnValue(false));
+
+                oneOf(siteMap).transactionError();
+                will(returnValue("error"));
+            }
+        });
+
+        Reply<?>reply = bankService.withdraw(request);
+
+        assertThat(reply, contains("error"));
+    }
+
+    @Test
+    public void getCurrentAmountOnUser() {
 
         context.checking(new Expectations() {{
 
@@ -98,7 +150,7 @@ public class BankServiceTest {
 
         Reply<?> reply = bankService.getCurrentAmount();
 
-        assertThat(reply, contains(amount, "entity"));
+        assertThat(reply, contains(amount));
 
     }
 

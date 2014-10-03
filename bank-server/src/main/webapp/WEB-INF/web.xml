@@ -19,7 +19,4 @@
         <listener-class>com.clouway.http.AppInjector</listener-class>
     </listener>
 
-    <welcome-file-list>
-        <welcome-file>loginController</welcome-file>
-    </welcome-file-list>
 </web-app>

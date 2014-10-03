@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="team-bank" ng-controller="AppCtrl">
 <head>
-    <title ng-bind="pageTitle"></title>
+    <title>Bank</title>
 
     <!-- social media tags -->
     <meta name="twitter:card" content="summary">
@@ -53,9 +53,8 @@
                         Transaction
                     </a>
                 </li>
-                <li ng-controller="logoutController">
-                    <a id="logout" class="btn btn-default col-md-offset-20" ng-click="logout()">
-                        <i class="fa fa-home"></i>
+                <li ng-controller="LogoutCtrl">
+                    <a id="logout" class="btn btn-default col-md-offset-22" ng-click="logout()">
                         Logout
                     </a>
                 </li>

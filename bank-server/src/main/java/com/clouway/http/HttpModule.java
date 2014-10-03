@@ -23,6 +23,8 @@ public class HttpModule extends ServletModule {
         bind(IdGenerator.class).to(SessionIdGenerator.class);
         bind(SiteMap.class).to(LabelMap.class);
         bind(Clock.class).to(CalendarUtil.class);
+        bind(UserValidator.class).to(RegxUserValidator.class);
+        bind(BankValidator.class).to(RegxBankValidator.class);
     }
 
     @Provides

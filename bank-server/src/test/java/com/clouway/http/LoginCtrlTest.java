@@ -11,6 +11,7 @@ import org.junit.Test;
 import javax.servlet.http.Cookie;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 
 /**
@@ -83,10 +84,10 @@ public class LoginCtrlTest {
                 oneOf(userRepository).isAuthorised(user);
                 will(returnValue(false));
 
-                oneOf(siteMap).authenticationError();
+                oneOf(siteMap).loginFailed();
                 will(returnValue("Error"));
             }
         });
-        assertThat(loginCtrl.authorise(response), is("Error"));
+        assertThat(loginCtrl.authorise(response), nullValue());
     }
 }

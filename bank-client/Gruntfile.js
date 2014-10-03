@@ -561,7 +561,7 @@ module.exports = function ( grunt ) {
   /**
    * The default task is to build and compile.
    */
-  grunt.registerTask( 'default', [ 'build', 'compile' ] );
+  grunt.registerTask( 'default', ['compile','copy:minyfy_to_server'] );
 
   /**
    * The `build` task gets your app ready to run for development and testing.

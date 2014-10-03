@@ -21,11 +21,15 @@ public class BankService {
 
     private final BankRepository bankRepository;
     private final CurrentUser currentUser;
+    private final BankValidator validator;
+    private final SiteMap siteMap;
 
     @Inject
-    public BankService(BankRepository bankRepository, Provider<CurrentUser> currentUserProvider) {
+    public BankService(BankRepository bankRepository, Provider<CurrentUser> currentUserProvider, BankValidator validator, SiteMap siteMap) {
 
         this.bankRepository = bankRepository;
+        this.validator = validator;
+        this.siteMap = siteMap;
         this.currentUser = currentUserProvider.get();
 
     }
@@ -36,9 +40,11 @@ public class BankService {
 
         Amount amount = request.read(Amount.class).as(Json.class);
 
-        TransactionInfo info = bankRepository.deposit(amount.getAmount());
-
-        return Reply.with(info).as(Json.class);
+        if (validator.transactionIsValid(amount)) {
+            TransactionInfo info = bankRepository.deposit(amount.getAmount());
+            return Reply.with(info).as(Json.class);
+        }
+        return Reply.with(siteMap.transactionError()).error();
     }
 
     @At("/withdraw")
@@ -47,9 +53,11 @@ public class BankService {
 
         Amount amount = request.read(Amount.class).as(Json.class);
 
-        TransactionInfo info = bankRepository.withdraw(amount.getAmount());
-
-        return Reply.with(info).as(Json.class);
+        if (validator.transactionIsValid(amount)){
+            TransactionInfo info = bankRepository.withdraw(amount.getAmount());
+            return Reply.with(info).as(Json.class);
+        }
+        return Reply.with(siteMap.transactionError()).error();
     }
 
     @At("/getAmount")

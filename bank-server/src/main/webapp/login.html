@@ -4,11 +4,6 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="login.css">
 
@@ -17,12 +12,13 @@
 <body>
 <h3 align="center">Bank</h3>
 <hr>
+@ShowIf(error!=null)
+<div align="center" style="color: #ff0000">${error}</div>
+
 <p></p>
 
 <div class="container-fluid" align="center">
     <div>
-        <p></p>
-
         <form class="form-horizontal" role="form" action="/login" method="post">
             <div class="form-group" style="width: 50%">
                 <label for="inputUserName" class="col-md-2 control-label"></label>
@@ -48,7 +44,7 @@
                     <div class="col-md-6 col-md-offset-1">
                         <button type="submit" class="btn btn-primary btn3d" id="login">Sign in</button>
                     </div>
-                    <div class="col-md-1 col-md-offset-1"><a href="/registration.html"
+                    <div class="col-md-1 col-md-offset-1"><a href="/registration"
                                                              class="btn btn-default btn3d">Registration</a>
                     </div>
                 </div>
