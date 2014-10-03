@@ -6,13 +6,29 @@ angular.module('team-bank', [
     'logout'
 ])
 
-    .run(function run() {
+    .config(['$urlRouterProvider', function($urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('transaction');
+
+    }])
+
+    .run(function() {
+
     })
 
-    .controller('AppCtrl', function AppCtrl($scope, $location) {
-        $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+    .controller('AppCtrl', ["$scope", function ($scope) {
+
+        $scope.$on('$stateChangeSuccess', function (event, toState) {
             if (angular.isDefined(toState.data.pageTitle)) {
                 $scope.pageTitle = toState.data.pageTitle + ' | team-bank';
             }
         });
-    });
+
+    }])
+
+
+
+;
+
+
+

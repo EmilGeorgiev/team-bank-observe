@@ -80,11 +80,39 @@ public class PersistentSessionRepository implements SessionRepository {
 
         DBObject session = sessions().findOne(query,fields);
 
+        if(session == null) {
+            return null;
+        }
+
         String username = (String) session.get("username");
         String id = (String) session.get("sessionId");
         Date expirationTime = (Date)session.get("expirationTime");
 
         return new Session(username,id,expirationTime);
+    }
+
+    /**
+     * Authenticate whether session in expired or not.
+     * @param sessionId
+     * @return
+     */
+    @Override
+    public boolean authenticate(String sessionId) {
+
+        Session session = get(sessionId);
+
+        if (session == null) {
+            return false;
+        }
+
+        if(clock.now().compareTo(session.getExpirationTime()) > 0) {
+
+            remove(sessionId);
+
+            return false;
+        }
+
+        return true;
     }
 
     private DBCollection sessions() {

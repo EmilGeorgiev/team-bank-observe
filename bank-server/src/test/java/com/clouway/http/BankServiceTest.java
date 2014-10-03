@@ -143,7 +143,7 @@ public class BankServiceTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(bankRepository).getAmountBy();
+            oneOf(bankRepository).getAmount();
             will(returnValue(amount));
         }
         });

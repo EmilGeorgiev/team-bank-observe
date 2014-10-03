@@ -9,4 +9,6 @@ import java.util.Date;
 public interface Clock {
 
     Date sessionExpirationTime(Calendar calendar);
+
+    Date now();
 }

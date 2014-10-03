@@ -17,4 +17,9 @@ public class CalendarUtil implements Clock{
 
         return calendar.getTime();
     }
+
+    @Override
+    public Date now() {
+        return new Date();
+    }
 }

@@ -2,7 +2,6 @@ package com.clouway.http;
 
 import com.clouway.core.*;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;
@@ -61,7 +60,7 @@ public class BankService {
     @Post
     public Reply<?> getCurrentAmount() {
 
-        Amount amount = bankRepository.getAmountBy();
+        Amount amount = bankRepository.getAmount();
 
         return Reply.with(amount).as(Json.class);
 

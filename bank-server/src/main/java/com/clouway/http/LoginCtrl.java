@@ -8,8 +8,11 @@ import com.google.sitebricks.Show;
 import com.google.sitebricks.http.Get;
 import com.google.sitebricks.http.Post;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by clouway on 14-9-25.
@@ -42,7 +45,7 @@ public class LoginCtrl {
     }
 
     @Post
-    public String authorise(HttpServletResponse response) {
+    public String authorise(HttpServletResponse response) throws ServletException, IOException {
 
         if (!userRepository.isAuthorised(user)) {
             error = siteMap.loginFailed();

@@ -44,6 +44,11 @@ public class PersistentSessionRepositoryTest {
                 calendar.set(Calendar.FEBRUARY,3,3,3,0,0);
                 return calendar.getTime();
             }
+
+            @Override
+            public Date now() {
+                return null;
+            }
         };
 
         persistentSessionRepository = new PersistentSessionRepository(Providers.of(db),clock);

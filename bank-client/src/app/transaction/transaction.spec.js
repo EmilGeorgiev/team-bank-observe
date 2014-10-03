@@ -30,7 +30,7 @@ describe('Transaction module', function() {
 
     describe("bankService send request to", function() {
 
-        var httpBackend, authRequestHandler, scope;
+        var httpBackend, authRequestHandler, scope, window, login;
 
         beforeEach(inject(function($httpBackend, $rootScope, $controller) {
 
@@ -41,7 +41,9 @@ describe('Transaction module', function() {
 
             scope = $rootScope.$new();
 
-            $controller('TransactionCtrl', {'$scope': scope});
+            window = {location: {href: jasmine.createSpy('/login')}};
+
+            $controller('TransactionCtrl', {'$scope': scope, '$window': window});
 
         }));
 
@@ -61,7 +63,6 @@ describe('Transaction module', function() {
 
             httpBackend.flush();
 
-            expect(scope.errorMessage).toBe("Not found");
         });
 
         it('"/bankService/deposit" for deposit amount', function() {
@@ -117,5 +118,12 @@ describe('Transaction module', function() {
 
         });
 
+        xit("server than session is expired", function() {
+            authRequestHandler.respond(401);
+
+            httpBackend.flush();
+
+            expect(window.location.href).toEqual("/login");
+        });
     });
 });

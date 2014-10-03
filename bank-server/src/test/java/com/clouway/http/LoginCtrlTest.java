@@ -8,7 +8,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
+
+import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
@@ -54,7 +57,7 @@ public class LoginCtrlTest {
 
 
     @Test
-    public void itShouldLogin() {
+    public void itShouldLogin() throws ServletException, IOException {
 
         context.checking(new Expectations(){
             {
@@ -77,7 +80,7 @@ public class LoginCtrlTest {
     }
 
     @Test
-    public void loginFailed() {
+    public void loginFailed() throws ServletException, IOException {
 
         context.checking(new Expectations(){
             {
@@ -88,6 +91,6 @@ public class LoginCtrlTest {
                 will(returnValue("Error"));
             }
         });
-        assertThat(loginCtrl.authorise(response), nullValue());
+        assertThat(loginCtrl.authorise(response), is("Error"));
     }
 }

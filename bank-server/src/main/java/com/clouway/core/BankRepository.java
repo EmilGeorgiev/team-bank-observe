@@ -8,5 +8,5 @@ public interface BankRepository {
 
     TransactionInfo withdraw(double amount);
 
-    Amount getAmountBy();
+    Amount getAmount();
 }

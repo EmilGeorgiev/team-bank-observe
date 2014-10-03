@@ -30,7 +30,6 @@ public class PersistentBankRepository implements BankRepository {
 
     /**
      * Deposit amount in client account.
-     *
      * @param amount amount who add in account
      * @return info for transaction and new current amount on the client
      */
@@ -43,13 +42,12 @@ public class PersistentBankRepository implements BankRepository {
 
         bankAccounts().update(query, update);
 
-        return new TransactionInfo(transactionMessages.success(), getAmountBy().getAmount());
+        return new TransactionInfo(transactionMessages.success(), getAmount().getAmount());
     }
 
     /**
      * Withdraw amount from client account.If amount who withdraw is greater than current amount
      * transaction is failed.
-     *
      * @param amount amount who withdraw from account
      * @return info object for transaction and new current amount on the client.
      */
@@ -73,7 +71,7 @@ public class PersistentBankRepository implements BankRepository {
     }
 
     @Override
-    public Amount getAmountBy() {
+    public Amount getAmount() {
 
         DBObject criteria = new BasicDBObject("name", currentUser.get().getName());
 
