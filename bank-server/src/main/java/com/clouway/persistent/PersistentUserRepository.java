@@ -4,6 +4,7 @@ import com.clouway.core.User;
 import com.clouway.core.UserRepository;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -12,6 +13,7 @@ import com.mongodb.DBObject;
 /**
  * Created by emil on 14-9-27.
  */
+@Singleton
 public class PersistentUserRepository implements UserRepository {
 
 

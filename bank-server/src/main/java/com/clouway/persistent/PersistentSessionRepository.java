@@ -6,6 +6,7 @@ import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -17,6 +18,7 @@ import java.util.Date;
 /**
  * Created by emil on 14-9-26.
  */
+@Singleton
 public class PersistentSessionRepository implements SessionRepository {
 
     private DB db;

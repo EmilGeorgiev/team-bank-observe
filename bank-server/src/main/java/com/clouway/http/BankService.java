@@ -20,18 +20,15 @@ import com.google.sitebricks.http.Post;
 public class BankService {
 
     private final BankRepository bankRepository;
-    private final CurrentUser currentUser;
     private final BankValidator validator;
     private final SiteMap siteMap;
 
     @Inject
-    public BankService(BankRepository bankRepository, Provider<CurrentUser> currentUserProvider, BankValidator validator, SiteMap siteMap) {
+    public BankService(BankRepository bankRepository, BankValidator validator, SiteMap siteMap) {
 
         this.bankRepository = bankRepository;
         this.validator = validator;
         this.siteMap = siteMap;
-        this.currentUser = currentUserProvider.get();
-
     }
 
     @At("/deposit")
@@ -64,7 +61,7 @@ public class BankService {
     @Post
     public Reply<?> getCurrentAmount() {
 
-        Amount amount = bankRepository.getAmountBy(currentUser.getName());
+        Amount amount = bankRepository.getAmountBy();
 
         return Reply.with(amount).as(Json.class);
 

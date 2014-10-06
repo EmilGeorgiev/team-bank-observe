@@ -47,7 +47,7 @@ public class BankServiceTest {
 
         CurrentUser currentUser = new CurrentUser("Ivan");
 
-        bankService = new BankService(bankRepository, Providers.of(currentUser), validator, siteMap);
+        bankService = new BankService(bankRepository, validator, siteMap);
 
         fakeRequestReader = new FakeRequestReader(currentUser.getName(), amount.getAmount());
 
@@ -143,7 +143,7 @@ public class BankServiceTest {
 
         context.checking(new Expectations() {{
 
-            oneOf(bankRepository).getAmountBy("Ivan");
+            oneOf(bankRepository).getAmountBy();
             will(returnValue(amount));
         }
         });

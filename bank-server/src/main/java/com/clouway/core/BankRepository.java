@@ -8,5 +8,5 @@ public interface BankRepository {
 
     TransactionInfo withdraw(double amount);
 
-    Amount getAmountBy(String clientName);
+    Amount getAmountBy();
 }

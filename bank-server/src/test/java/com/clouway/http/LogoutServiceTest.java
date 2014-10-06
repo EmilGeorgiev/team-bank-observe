@@ -3,9 +3,7 @@ package com.clouway.http;
 import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
 import com.clouway.core.SiteMap;
-import com.clouway.custommatcher.ReplyMatcher;
 import com.google.inject.util.Providers;
-import com.google.sitebricks.headless.Reply;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -17,7 +15,6 @@ import java.util.Date;
 
 import static com.clouway.custommatcher.ReplyMatcher.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 /**
  * Created by clouway on 14-9-25.
