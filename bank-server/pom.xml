@@ -10,6 +10,7 @@
 
     <dependencies>
 
+        <!--dependencies for testing-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -48,6 +49,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!--server dependencies-->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jsp</artifactId>
@@ -60,13 +62,14 @@
             <version>8.1.15.v20140411</version>
         </dependency>
 
-
+        <!--sitebricks dependence-->
         <dependency>
             <groupId>com.google.sitebricks</groupId>
             <artifactId>sitebricks</artifactId>
             <version>0.8.8</version>
         </dependency>
 
+        <!--guice dependencies-->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
@@ -79,18 +82,21 @@
             <version>3.0</version>
         </dependency>
 
+        <!--database dependence-->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>2.12.2</version>
         </dependency>
 
+        <!--logger dependence-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.7</version>
         </dependency>
 
+        <!--guava dependence-->
         <dependency>
             <groupId>org.sonatype.sisu</groupId>
             <artifactId>sisu-guava</artifactId>

@@ -140,4 +140,23 @@ describe('Transaction module', function() {
             expect($window.location.replace).toHaveBeenCalledWith("/login");
         });
     });
+
+    describe("directive for amount validation",function () {
+
+        var compile, element, contents, rootscope;
+        beforeEach(module('transaction'));
+        beforeEach(inject(function (_$compile_, $rootScope) {
+            compile = _$compile_;
+            rootscope = $rootScope;
+        }));
+
+        it('should return undefined after giving to input wrong value', function () {
+            element = angular.element('<div ng-model="amount" amount-validator></div>');
+            compile(element)((rootscope));
+            contents = element.contents();
+            rootscope.$digest();
+            console.log(contents[0]);
+            expect(contents[0]).toBe(undefined);
+        });
+    });
 });
