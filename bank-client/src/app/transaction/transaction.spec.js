@@ -11,11 +11,12 @@ describe('Transaction module', function() {
 
         beforeEach(inject(function($rootScope, $controller) {
 
+
             state = {go: jasmine.createSpy()};
 
             scope = $rootScope.$new();
 
-            $controller('TransactionCtrl', {'$scope': scope, '$state': state});
+           $controller('TransactionCtrl', {'$scope': scope, '$state': state});
 
         }));
 
@@ -26,11 +27,12 @@ describe('Transaction module', function() {
             expect(state.go).toHaveBeenCalledWith('transaction');
 
         });
+
     });
 
     describe("bankService send request to", function() {
 
-        var httpBackend, authRequestHandler, scope, window, login;
+        var httpBackend, authRequestHandler, scope;
 
         beforeEach(inject(function($httpBackend, $rootScope, $controller) {
 
@@ -41,9 +43,7 @@ describe('Transaction module', function() {
 
             scope = $rootScope.$new();
 
-            window = {location: {href: jasmine.createSpy('/login')}};
-
-            $controller('TransactionCtrl', {'$scope': scope, '$window': window});
+            $controller('TransactionCtrl', {'$scope': scope});
 
         }));
 
@@ -88,8 +88,6 @@ describe('Transaction module', function() {
 
             httpBackend.flush();
 
-            expect(scope.errorMessage).toBe("Not found");
-
         });
 
         it('"/bankService/withdraw" for withdraw amount', function() {
@@ -114,16 +112,32 @@ describe('Transaction module', function() {
 
             expect(scope.currentAmount).toBe(50);
 
-            expect(scope.errorMessage).toBe("Not enough many in account");
+        });
+
+    });
+
+    describe("unauthorisedInterceptors", function() {
+
+        var $window, windowService;
+
+        beforeEach(function() {
+
+            $window = {location: {replace: jasmine.createSpy()}};
+
+            module(function($provide) {
+                $provide.value('$window', $window);
+            });
+
+            inject(function($injector) {
+                windowService = $injector.get('windowService');
+            });
 
         });
 
-        xit("server than session is expired", function() {
-            authRequestHandler.respond(401);
+        it('replace should redirect to "/login"', function() {
+            windowService.redirect();
 
-            httpBackend.flush();
-
-            expect(window.location.href).toEqual("/login");
+            expect($window.location.replace).toHaveBeenCalledWith("/login");
         });
     });
 });

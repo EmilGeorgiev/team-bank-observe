@@ -1,11 +1,11 @@
-angular.module("logout", ["ui.router"])
+angular.module("logout", ['transaction'])
 
-    .controller("LogoutCtrl", ["$scope", '$http', function ($scope, $http) {
+    .controller("LogoutCtrl", ["$scope", '$http', 'windowService', function ($scope, $http, windowService) {
 
         $scope.logout = function () {
             $http.post("/logout")
-                .success(function (data) {
-                    window.location.href = data;
+                .success(function () {
+                    windowService.redirect();
                 });
         };
     }]

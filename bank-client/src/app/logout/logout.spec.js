@@ -1,24 +1,33 @@
 describe("logout behavior", function () {
 
-    var scope, http, httpBackend, controller;
+    var scope, httpBackend, http, controller, _windowService;
 
-    beforeEach(module("logout"));
-    beforeEach(inject(function ($rootScope, $http, $httpBackend, $controller) {
+    beforeEach(module('logout'));
+
+    beforeEach(inject(function ($rootScope, $httpBackend, $http, $controller) {
         httpBackend = $httpBackend;
+
         scope = $rootScope.$new();
+
         http = $http;
 
+        _windowService = {windowService: {redirect: jasmine.createSpy}};
+
         controller = $controller('LogoutCtrl', {
-            $scope: scope,
-            $http: http
+            '$scope': scope,
+            '$http': http,
+            'windowService': _windowService
         });
     }));
 
-    it("should get path to login page as response from server", function () {
-        httpBackend.whenPOST("/logout").respond(200);
+    xit("should get path to login page as response from server", function () {
+        httpBackend.expectPOST("/logout").respond("/login");
+
         scope.logout();
-        expect().toBe();
+
         httpBackend.flush();
+
+        expect(_windowService.redirect()).toHaveBeenCalled();
 
     });
 });

@@ -18,24 +18,27 @@ angular.module('transaction', ['ui.router'])
         $httpProvider.interceptors.push('unauthorisedInterceptor');
     }])
 
-    .factory('unauthorisedInterceptor', ['$q','$rootScope', '$window', function($q, $rootScope, $window) {
+    .factory('unauthorisedInterceptor', ['$q', 'windowService', function($q, windowService) {
 
         return {
             'responseError': function(rejection) {
                 if(rejection.status === 401) {
-                   $window.location.href = rejection.data;
+                   windowService.redirect();
                 }
-
-                $rootScope.errorMessage = rejection.data;
-
-                console.log(rejection);
-                console.log($q.reject(rejection));
 
                 return $q.reject(rejection);
             }
 
         };
 
+    }])
+
+    .factory('windowService', ['$window', function($window) {
+        return {
+            redirect: function() {
+                $window.location.replace("/login");
+            }
+        };
     }])
 
 .controller('TransactionCtrl', ['$scope', '$state', 'bankService', function($scope, $state, bankService) {
