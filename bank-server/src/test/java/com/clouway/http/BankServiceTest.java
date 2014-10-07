@@ -144,13 +144,13 @@ public class BankServiceTest {
         context.checking(new Expectations() {{
 
             oneOf(bankRepository).getAmount();
-            will(returnValue(amount));
+            will(returnValue(5.1d));
         }
         });
 
         Reply<?> reply = bankService.getCurrentAmount();
 
-        assertThat(reply, contains(amount));
+        assertThat(reply, contains(5.1d));
 
     }
 

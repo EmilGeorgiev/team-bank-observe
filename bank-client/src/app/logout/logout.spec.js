@@ -1,17 +1,20 @@
 describe("logout behavior", function () {
 
-    var scope, httpBackend, http, controller, _windowService;
+    var scope, httpBackend, http, controller, _windowService, $window;
 
+    beforeEach(module('transaction'));
     beforeEach(module('logout'));
 
-    beforeEach(inject(function ($rootScope, $httpBackend, $http, $controller) {
+    beforeEach(inject(function ($rootScope, $httpBackend, $http, $controller, $injector) {
         httpBackend = $httpBackend;
 
         scope = $rootScope.$new();
 
         http = $http;
 
-        _windowService = {windowService: {redirect: jasmine.createSpy}};
+        _windowService = $injector.get('windowService');
+
+        $window = {location: {replace: jasmine.createSpy()}};
 
         controller = $controller('LogoutCtrl', {
             '$scope': scope,
@@ -20,14 +23,14 @@ describe("logout behavior", function () {
         });
     }));
 
-    xit("should get path to login page as response from server", function () {
-        httpBackend.expectPOST("/logout").respond("/login");
+    xit("should be redirected to login page", function () {
 
         scope.logout();
 
-        httpBackend.flush();
+        httpBackend.whenPOST("/logout").respond("/login");
 
         expect(_windowService.redirect()).toHaveBeenCalled();
 
+        httpBackend.flush();
     });
 });

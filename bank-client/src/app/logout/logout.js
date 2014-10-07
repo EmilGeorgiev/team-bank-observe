@@ -1,4 +1,4 @@
-angular.module("logout", ['transaction'])
+angular.module("logout", [])
 
     .controller("LogoutCtrl", ["$scope", '$http', 'windowService', function ($scope, $http, windowService) {
 

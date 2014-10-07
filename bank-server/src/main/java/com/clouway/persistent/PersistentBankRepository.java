@@ -42,7 +42,7 @@ public class PersistentBankRepository implements BankRepository {
 
         bankAccounts().update(query, update);
 
-        return new TransactionInfo(transactionMessages.success(), getAmount().getAmount());
+        return new TransactionInfo(transactionMessages.success(), getAmount());
         //TODO: change this shit: getAmount(), getAmount???
     }
 
@@ -55,7 +55,7 @@ public class PersistentBankRepository implements BankRepository {
     @Override
     public TransactionInfo withdraw(double amount) {
 
-        Double currentAmount = getCurrentAmount(currentUser.get().getName());
+        Double currentAmount = getAmount();
 
         if (currentAmount < amount) {
             return new TransactionInfo(transactionMessages.failed(), currentAmount);
@@ -67,12 +67,12 @@ public class PersistentBankRepository implements BankRepository {
 
         bankAccounts().update(query, update);
 
-        return new TransactionInfo(transactionMessages.success(), getCurrentAmount(currentUser.get().getName()));
+        return new TransactionInfo(transactionMessages.success(), getAmount());
 
     }
 
     @Override
-    public Amount getAmount() {
+    public double getAmount() {
 
         DBObject criteria = new BasicDBObject("name", currentUser.get().getName());
 
@@ -81,19 +81,8 @@ public class PersistentBankRepository implements BankRepository {
 
         BasicDBObject dbObject = (BasicDBObject) bankAccounts().findOne(criteria, projection);
 
-        return new Amount(dbObject.getDouble("amount"));
-
-    }
-
-    private Double getCurrentAmount(String username) {
-        DBObject criteria = new BasicDBObject("name", username);
-
-        DBObject projection = new BasicDBObject("amount", 1)
-                .append("_id", 0);
-
-        BasicDBObject dbObject = (BasicDBObject) bankAccounts().findOne(criteria, projection);
-
         return dbObject.getDouble("amount");
+
     }
 
     private DBCollection bankAccounts() {

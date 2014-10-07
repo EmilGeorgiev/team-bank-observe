@@ -3,7 +3,7 @@
  */
 angular.module('transaction', ['ui.router'])
 
-    .config(['$stateProvider', '$httpProvider', function($stateProvider, $httpProvider) {
+    .config(['$stateProvider', '$httpProvider', function ($stateProvider, $httpProvider) {
         $stateProvider.state('transaction', {
             url: '/transaction',
             views: {
@@ -18,12 +18,12 @@ angular.module('transaction', ['ui.router'])
         $httpProvider.interceptors.push('unauthorisedInterceptor');
     }])
 
-    .factory('unauthorisedInterceptor', ['$q', 'windowService', function($q, windowService) {
+    .factory('unauthorisedInterceptor', ['$q', 'windowService', function ($q, windowService) {
 
         return {
-            'responseError': function(rejection) {
-                if(rejection.status === 401) {
-                   windowService.redirect();
+            'responseError': function (rejection) {
+                if (rejection.status === 401) {
+                    windowService.redirect();
                 }
 
                 return $q.reject(rejection);
@@ -33,61 +33,71 @@ angular.module('transaction', ['ui.router'])
 
     }])
 
-    .factory('windowService', ['$window', function($window) {
+    .factory('windowService', ['$window', function ($window) {
         return {
-            redirect: function() {
+            redirect: function () {
                 $window.location.replace("/login");
             }
         };
     }])
 
-.controller('TransactionCtrl', ['$scope', '$state', 'bankService', function($scope, $state, bankService) {
+    .controller('TransactionCtrl', ['$scope', '$state', 'bankService', function ($scope, $state, bankService) {
 
-        $scope.navigateToTransaction = function() {
+        $scope.navigateToTransaction = function () {
             $state.go('transaction');
         };
 
 
-        bankService.fetchCurrentAmount()
-            .success(function(data) {
+        bankService.fetchCurrentAmount().then(function (amount) {
+            $scope.currentAmount = amount;
+        });
+
+        $scope.deposit = function (amount) {
+            bankService.deposit(amount).then(function (data) {
                 $scope.currentAmount = data.amount;
             });
-
-        $scope.deposit = function(amount) {
-            bankService.deposit(amount)
-                .success(function(data) {
-                    $scope.currentAmount = data.amount;
-                });
         };
 
-        $scope.withdraw = function(amount) {
+        $scope.withdraw = function (amount) {
 
-            bankService.withdraw(amount)
-                .success(function(data) {
-                    $scope.currentAmount = data.amount;
-                });
+            bankService.withdraw(amount).then(function (data) {
+                $scope.currentAmount = data.amount;
+            });
         };
     }])
 
-.factory('bankService', ['$http', function($http) {
+    .factory('bankService', ['$http', '$q', function ($http, $q) {
+
 
         return {
-            fetchCurrentAmount: function() {
-                return $http.post("/bankService/getAmount");
+            fetchCurrentAmount: function () {
+                var defer = $q.defer();
+                $http.post("/bankService/getAmount").success(function (amount) {
+                    defer.resolve(amount);
+                });
+                return defer.promise;
             },
 
-            deposit: function(amount) {
-                return $http.post('/bankService/deposit', {amount: amount});
+            deposit: function (amount) {
+                var defer = $q.defer();
+                $http.post('/bankService/deposit', {amount: amount}).success(function (amount) {
+                    defer.resolve(amount);
+                });
+                return defer.promise;
             },
 
-            withdraw: function(amount) {
-                return $http.post("/bankService/withdraw", {amount: amount});
+            withdraw: function (amount) {
+                var defer = $q.defer();
+                $http.post("/bankService/withdraw", {amount: amount}).success(function (amount) {
+                    defer.resolve(amount);
+                });
+                return defer.promise;
             }
         };
 
     }])
 
-.directive('amountValidator', function () {
+    .directive('amountValidator', function () {
 
         var regexp = /^[1-9][0-9]*(\.[0-9]{1,2})?$/;
 
@@ -95,11 +105,11 @@ angular.module('transaction', ['ui.router'])
             require: 'ngModel',
             link: function (scope, elm, attrs, ctrl) {
                 ctrl.$parsers.unshift(function (viewValue) {
-                    if(regexp.test(viewValue)){
+                    if (regexp.test(viewValue)) {
                         ctrl.$setValidity('float', true);
                         return parseFloat(viewValue.replace(',', '.'));
                     }
-                    else{
+                    else {
                         ctrl.$setValidity('float', false);
                         return undefined;
                     }

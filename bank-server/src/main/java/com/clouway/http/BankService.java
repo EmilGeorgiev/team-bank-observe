@@ -60,9 +60,6 @@ public class BankService {
     @Post
     public Reply<?> getCurrentAmount() {
 
-        Amount amount = bankRepository.getAmount();
-
-        return Reply.with(amount).as(Json.class);
-
+        return Reply.with(bankRepository.getAmount()).ok();
     }
 }

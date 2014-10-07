@@ -39,7 +39,7 @@ describe('Transaction module', function() {
             httpBackend = $httpBackend;
 
             authRequestHandler = httpBackend.expectPOST('/bankService/getAmount');
-            authRequestHandler.respond({amount: 50});
+            authRequestHandler.respond('50');
 
             scope = $rootScope.$new();
 
@@ -55,7 +55,7 @@ describe('Transaction module', function() {
         it('"/bankService/getAmount" service for get current amount on the client', function() {
             httpBackend.flush();
 
-            expect(scope.currentAmount).toBe(50);
+            expect(scope.currentAmount).toBe('50');
         });
 
         it('"/bankService/getAmount" service should fail', function() {
@@ -69,7 +69,7 @@ describe('Transaction module', function() {
 
             httpBackend.flush();
 
-            expect(scope.currentAmount).toBe(50);
+            expect(scope.currentAmount).toBe('50');
 
             httpBackend.expectPOST('/bankService/deposit', {amount: 70}).respond({amount: 120});
 
@@ -110,7 +110,7 @@ describe('Transaction module', function() {
 
             httpBackend.flush();
 
-            expect(scope.currentAmount).toBe(50);
+            expect(scope.currentAmount).toBe('50');
 
         });
 
@@ -143,19 +143,18 @@ describe('Transaction module', function() {
 
     describe("directive for amount validation",function () {
 
-        var compile, element, contents, rootscope;
+        var compile, element, contents, rootScope;
         beforeEach(module('transaction'));
         beforeEach(inject(function (_$compile_, $rootScope) {
             compile = _$compile_;
-            rootscope = $rootScope;
+            rootScope = $rootScope;
         }));
 
         it('should return undefined after giving to input wrong value', function () {
-            element = angular.element('<div ng-model="amount" amount-validator></div>');
-            compile(element)((rootscope));
+            element = angular.element('<div amount-validator ng-model="amount"></div>');
+            compile(element)(rootScope);
             contents = element.contents();
-            rootscope.$digest();
-            console.log(contents[0]);
+            rootScope.$apply();
             expect(contents[0]).toBe(undefined);
         });
     });
