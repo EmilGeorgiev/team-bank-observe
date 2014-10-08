@@ -45,15 +45,10 @@ public class HttpModule extends ServletModule {
             }
         };
     }
-    
+
     @Provides
     @RequestScoped
     public Session getCurrentSession(Provider<HttpServletRequest> requestProvider, SessionRepository sessionRepository, SiteMap siteMap) {
-        HttpServletRequest request = requestProvider.get();
-        if(request==null){
-            System.out.println("Nullable request");
-            return null;
-        }
 
         Cookie[] cookies = requestProvider.get().getCookies();
 

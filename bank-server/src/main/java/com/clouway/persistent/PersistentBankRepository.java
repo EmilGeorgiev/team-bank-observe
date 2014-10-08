@@ -43,7 +43,6 @@ public class PersistentBankRepository implements BankRepository {
         bankAccounts().update(query, update);
 
         return new TransactionInfo(transactionMessages.success(), getAmount());
-        //TODO: change this shit: getAmount(), getAmount???
     }
 
     /**

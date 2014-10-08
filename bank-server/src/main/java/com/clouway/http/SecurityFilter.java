@@ -1,7 +1,9 @@
 package com.clouway.http;
 
+import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import javax.servlet.*;
@@ -18,11 +20,13 @@ public class SecurityFilter implements Filter {
 
 
     private final SessionRepository sessionRepository;
+    private final Provider<Session> sessionProvider;
 
     @Inject
-    public SecurityFilter(SessionRepository sessionRepository) {
+    public SecurityFilter(SessionRepository sessionRepository, Provider<Session> sessionProvider) {
 
         this.sessionRepository = sessionRepository;
+        this.sessionProvider = sessionProvider;
     }
 
     @Override
@@ -36,26 +40,14 @@ public class SecurityFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        Cookie[] cookies = request.getCookies();
+        Session session = sessionProvider.get();
 
-        String sessionId = null;
-
-        if(cookies != null) {
-            for(Cookie cookie: cookies) {
-                if("sid".equals(cookie.getName())) {
-                    sessionId = cookie.getValue();
-                }
-            }
-        }
-
-        if(!sessionRepository.authenticate(sessionId)) {
+        if (session == null || !sessionRepository.authenticate(session.getSessionId())) {
             response.setStatus(401);
+            return;
         }
-
         filterChain.doFilter(request, response);
-
     }
-
 
     @Override
     public void destroy() {

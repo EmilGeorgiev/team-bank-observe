@@ -1,10 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
-import com.clouway.custommatcher.CaptureMatcher;
-import com.clouway.persistent.util.ClockUtil;
-import com.google.inject.util.Providers;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -16,8 +12,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Calendar;
-import java.util.Date;
 
 public class SecurityFilterTest {
 
@@ -42,7 +36,7 @@ public class SecurityFilterTest {
     @Before
     public void setUp() {
 
-        securityFilter = new SecurityFilter(sessionRepository);
+//        securityFilter = new SecurityFilter(sessionRepository, sessionProvider);
 
         cookies = new Cookie[]{new Cookie("sid", "abc")};
 
@@ -75,7 +69,7 @@ public class SecurityFilterTest {
     @Test
     public void sessionIsExpired() throws Exception {
 
-        securityFilter = new SecurityFilter(sessionRepository);
+//        securityFilter = new SecurityFilter(sessionRepository, sessionProvider);
 
         context.checking(new Expectations() {{
 

@@ -66,13 +66,12 @@ angular.module('transaction', ['ui.router'])
         };
     }])
 
-    .factory('bankService', ['$http', '$q', function ($http, $q) {
-
+    .service('bankService', ['$http', '$q', function ($http, $q) {
 
         return {
             fetchCurrentAmount: function () {
                 var defer = $q.defer();
-                $http.post("/bankService/getAmount").success(function (amount) {
+                $http.get("/bankService/getAmount").success(function (amount) {
                     defer.resolve(amount);
                 });
                 return defer.promise;

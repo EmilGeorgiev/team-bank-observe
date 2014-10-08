@@ -1,26 +1,26 @@
 /**
  * Created by emil on 14-9-27.
  */
-describe('Transaction module', function() {
+describe('Transaction module', function () {
 
     beforeEach(module('transaction'));
 
-    describe('TransactionCtrl', function() {
+    describe('TransactionCtrl', function () {
 
         var state, scope;
 
-        beforeEach(inject(function($rootScope, $controller) {
+        beforeEach(inject(function ($rootScope, $controller) {
 
 
             state = {go: jasmine.createSpy()};
 
             scope = $rootScope.$new();
 
-           $controller('TransactionCtrl', {'$scope': scope, '$state': state});
+            $controller('TransactionCtrl', {'$scope': scope, '$state': state});
 
         }));
 
-        it('should change view to state "transaction"', function() {
+        it('should change view to state "transaction"', function () {
 
             scope.navigateToTransaction();
 
@@ -30,15 +30,15 @@ describe('Transaction module', function() {
 
     });
 
-    describe("bankService send request to", function() {
+    describe("bankService send request to", function () {
 
         var httpBackend, authRequestHandler, scope;
 
-        beforeEach(inject(function($httpBackend, $rootScope, $controller) {
+        beforeEach(inject(function ($httpBackend, $rootScope, $controller) {
 
             httpBackend = $httpBackend;
 
-            authRequestHandler = httpBackend.expectPOST('/bankService/getAmount');
+            authRequestHandler = httpBackend.expectGET('/bankService/getAmount');
             authRequestHandler.respond('50');
 
             scope = $rootScope.$new();
@@ -47,25 +47,25 @@ describe('Transaction module', function() {
 
         }));
 
-        afterEach(function() {
+        afterEach(function () {
             httpBackend.verifyNoOutstandingExpectation();
             httpBackend.verifyNoOutstandingRequest();
         });
 
-        it('"/bankService/getAmount" service for get current amount on the client', function() {
+        it('"/bankService/getAmount" service for get current amount on the client', function () {
             httpBackend.flush();
 
             expect(scope.currentAmount).toBe('50');
         });
 
-        it('"/bankService/getAmount" service should fail', function() {
+        it('"/bankService/getAmount" service should fail', function () {
             authRequestHandler.respond(404, "Not found");
 
             httpBackend.flush();
 
         });
 
-        it('"/bankService/deposit" for deposit amount', function() {
+        it('"/bankService/deposit" for deposit amount', function () {
 
             httpBackend.flush();
 
@@ -81,7 +81,7 @@ describe('Transaction module', function() {
 
         });
 
-        it('"/bankService should fail"', function() {
+        it('"/bankService should fail"', function () {
             httpBackend.expectPOST('/bankService/deposit', {amount: 34}).respond(404, "Not found");
 
             scope.deposit(34);
@@ -90,7 +90,7 @@ describe('Transaction module', function() {
 
         });
 
-        it('"/bankService/withdraw" for withdraw amount', function() {
+        it('"/bankService/withdraw" for withdraw amount', function () {
 
             httpBackend.expectPOST('/bankService/withdraw', {amount: 60}).respond({amount: 30});
 
@@ -102,7 +102,7 @@ describe('Transaction module', function() {
 
         });
 
-        it('"/bankService/withdraw" should withdraw more amount when we have', function() {
+        it('"/bankService/withdraw" should withdraw more amount when we have', function () {
 
             httpBackend.expectPOST('/bankService/withdraw', {amount: 60}).respond(400, "Not enough many in account");
 
@@ -116,32 +116,32 @@ describe('Transaction module', function() {
 
     });
 
-    describe("unauthorisedInterceptors", function() {
+    describe("unauthorisedInterceptors", function () {
 
         var $window, windowService;
 
-        beforeEach(function() {
+        beforeEach(function () {
 
             $window = {location: {replace: jasmine.createSpy()}};
 
-            module(function($provide) {
+            module(function ($provide) {
                 $provide.value('$window', $window);
             });
 
-            inject(function($injector) {
+            inject(function ($injector) {
                 windowService = $injector.get('windowService');
             });
 
         });
 
-        it('replace should redirect to "/login"', function() {
+        it('replace should redirect to "/login"', function () {
             windowService.redirect();
 
             expect($window.location.replace).toHaveBeenCalledWith("/login");
         });
     });
 
-    describe("directive for amount validation",function () {
+    describe("directive for amount validation", function () {
 
         var compile, element, contents, rootScope;
         beforeEach(module('transaction'));
@@ -151,11 +151,13 @@ describe('Transaction module', function() {
         }));
 
         it('should return undefined after giving to input wrong value', function () {
-            element = angular.element('<div amount-validator ng-model="amount"></div>');
+            element = angular.element('<input amount-validator ng-model="amount">');
+
             compile(element)(rootScope);
+            rootScope.amount = '1';
             contents = element.contents();
             rootScope.$apply();
-            expect(contents[0]).toBe(undefined);
+            expect(element.val()).toBe('1');
         });
     });
 });

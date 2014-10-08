@@ -8,6 +8,7 @@ import com.google.sitebricks.client.transport.Json;
 import com.google.sitebricks.headless.Reply;
 import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.headless.Service;
+import com.google.sitebricks.http.Get;
 import com.google.sitebricks.http.Post;
 
 /**
@@ -57,7 +58,7 @@ public class BankService {
     }
 
     @At("/getAmount")
-    @Post
+    @Get
     public Reply<?> getCurrentAmount() {
 
         return Reply.with(bankRepository.getAmount()).ok();
