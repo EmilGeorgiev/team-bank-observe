@@ -1,6 +1,8 @@
 package com.clouway.http;
 
+import com.clouway.core.Session;
 import com.clouway.core.SessionRepository;
+import com.google.inject.util.Providers;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -9,14 +11,18 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 
 public class SecurityFilterTest {
 
     private SecurityFilter securityFilter;
     private Cookie[] cookies;
+    private Session session;
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
@@ -28,15 +34,18 @@ public class SecurityFilterTest {
     private HttpServletRequest request = null;
 
     @Mock
-    private FilterChain filterChain = null;
+    private FilterChain filterChain;
 
     @Mock
     private HttpServletResponse response = null;
 
+
     @Before
     public void setUp() {
 
-//        securityFilter = new SecurityFilter(sessionRepository, sessionProvider);
+        session = new Session("username","sessionid",new Date());
+
+        securityFilter = new SecurityFilter(sessionRepository, Providers.of(session));
 
         cookies = new Cookie[]{new Cookie("sid", "abc")};
 
@@ -48,15 +57,10 @@ public class SecurityFilterTest {
 
         context.checking(new Expectations() {
             {
-
-                oneOf(request).getCookies();
-                will(returnValue(cookies));
-
-                oneOf(sessionRepository).authenticate(sessionID(sid("abc")));
+                oneOf(sessionRepository).authenticate(sessionID(sid("sessionid")));
                 will(returnValue(true));
 
                 oneOf(filterChain).doFilter(request, response);
-
             }
         });
 
@@ -67,21 +71,14 @@ public class SecurityFilterTest {
 
 
     @Test
-    public void sessionIsExpired() throws Exception {
-
-//        securityFilter = new SecurityFilter(sessionRepository, sessionProvider);
+    public void sessionIsExpired() throws IOException, ServletException {
 
         context.checking(new Expectations() {{
 
-            oneOf(request).getCookies();
-            will(returnValue(cookies));
-
-            oneOf(sessionRepository).authenticate(sessionID(sid("abc")));
+            oneOf(sessionRepository).authenticate(sessionID(sid("sessionid")));
             will(returnValue(false));
 
             oneOf(response).setStatus(401);
-
-            oneOf(filterChain).doFilter(request, response);
         }
         });
 

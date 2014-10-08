@@ -1,6 +1,6 @@
 describe("logout behavior", function () {
 
-    var scope, httpBackend, http, controller, _windowService, $window;
+    var scope, httpBackend, http, controller, _windowService;
 
     beforeEach(module('transaction'));
     beforeEach(module('logout'));
@@ -31,6 +31,6 @@ describe("logout behavior", function () {
 
         httpBackend.flush();
 
-        expect(_windowService.redirect()).toHaveBeenCalled();
+        expect(_windowService.redirect).toHaveBeenCalled();
     });
 });
