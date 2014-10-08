@@ -14,7 +14,7 @@ describe("logout behavior", function () {
 
         _windowService = $injector.get('windowService');
 
-        $window = {location: {replace: jasmine.createSpy()}};
+        spyOn(_windowService, 'redirect');
 
         controller = $controller('LogoutCtrl', {
             '$scope': scope,
