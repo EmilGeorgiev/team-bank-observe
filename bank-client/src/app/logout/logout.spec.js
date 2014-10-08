@@ -23,14 +23,14 @@ describe("logout behavior", function () {
         });
     }));
 
-    xit("should be redirected to login page", function () {
+    it("should be redirected to login page", function () {
 
         scope.logout();
 
         httpBackend.whenPOST("/logout").respond("/login");
 
-        expect(_windowService.redirect()).toHaveBeenCalled();
-
         httpBackend.flush();
+
+        expect(_windowService.redirect()).toHaveBeenCalled();
     });
 });
