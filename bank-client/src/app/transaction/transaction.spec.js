@@ -5,7 +5,7 @@ describe('Transaction module', function () {
 
     beforeEach(module('transaction'));
 
-    describe('TransactionCtrl', function () {
+    describe('Transaction state', function () {
 
         var state, scope;
 
@@ -30,134 +30,200 @@ describe('Transaction module', function () {
 
     });
 
-    describe("bankService send request to", function () {
+    describe('requestService', function() {
 
-        var httpBackend, authRequestHandler, scope;
+        var httpBackend, requestService, $q, defer;
 
-        beforeEach(inject(function ($httpBackend, $rootScope, $controller) {
+        beforeEach(function() {
 
-            httpBackend = $httpBackend;
+            $q = {
+                defer: jasmine.createSpy(),
+                promise: jasmine.createSpy()
+            };
 
-            authRequestHandler = httpBackend.expectGET('/bankService/getAmount');
-            authRequestHandler.respond('50');
+            module(function($provide) {
 
-            scope = $rootScope.$new();
+                $provide.value('$q', $q);
 
-            $controller('TransactionCtrl', {'$scope': scope});
+            });
 
-        }));
+            inject(function($injector) {
 
-        afterEach(function () {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
-        });
+                httpBackend = $injector.get('$httpBackend');
 
-        it('"/bankService/getAmount" service for get current amount on the client', function () {
-            httpBackend.flush();
+                requestService = $injector.get('requestService');
 
-            expect(scope.currentAmount).toBe('50');
-        });
-
-        it('"/bankService/getAmount" service should fail', function () {
-            authRequestHandler.respond(404, "Not found");
-
-            httpBackend.flush();
+            });
 
         });
 
-        it('"/bankService/deposit" for deposit amount', function () {
+        it('should send request', function() {
+
+            requestService.sendRequest('POST', '/deposit', {amount: 120});
 
             httpBackend.flush();
 
-            expect(scope.currentAmount).toBe('50');
+            httpBackend.expectPOST('/deposit').response({amount: 120});
 
-            httpBackend.expectPOST('/bankService/deposit', {amount: 70}).respond({amount: 120});
 
-            scope.deposit(70);
 
-            httpBackend.flush();
-
-            expect(scope.currentAmount).toBe(120);
-
-        });
-
-        it('"/bankService should fail"', function () {
-            httpBackend.expectPOST('/bankService/deposit', {amount: 34}).respond(404, "Not found");
-
-            scope.deposit(34);
-
-            httpBackend.flush();
-
-        });
-
-        it('"/bankService/withdraw" for withdraw amount', function () {
-
-            httpBackend.expectPOST('/bankService/withdraw', {amount: 60}).respond({amount: 30});
-
-            scope.withdraw(60);
-
-            httpBackend.flush();
-
-            expect(scope.currentAmount).toBe(30);
-
-        });
-
-        it('"/bankService/withdraw" should withdraw more amount when we have', function () {
-
-            httpBackend.expectPOST('/bankService/withdraw', {amount: 60}).respond(400, "Not enough many in account");
-
-            scope.withdraw(60);
-
-            httpBackend.flush();
-
-            expect(scope.currentAmount).toBe('50');
+//            expect($q.defer()).toHaveBeenCalledWith();
 
         });
 
     });
 
-    describe("unauthorisedInterceptors", function () {
+    describe("bankService ", function () {
 
-        var $window, windowService;
+        var mock, bankService;
 
         beforeEach(function () {
 
-            $window = {location: {replace: jasmine.createSpy()}};
+            mock = {sendRequest: jasmine.createSpy()};
+
+            module(function($provide) {
+
+                $provide.value('requestService', mock);
+
+            });
+
+            inject(function($injector) {
+
+                bankService = $injector.get('bankService');
+
+            });
+
+        });
+
+        it('should get current amount on user', function () {
+
+            bankService.fetchCurrentAmount();
+
+            expect(mock.sendRequest).toHaveBeenCalledWith("GET", "/bankService/getAmount");
+
+        });
+
+        it('should deposit amount in account on current user', function () {
+
+            bankService.deposit(20);
+
+            expect(mock.sendRequest).toHaveBeenCalledWith('POST', '/bankService/deposit', {amount: 20});
+
+        });
+
+        it('should withdraw amount from user account', function () {
+
+            bankService.withdraw(56);
+
+            expect(mock.sendRequest).toHaveBeenCalledWith('POST', '/bankService/withdraw', {amount: 56});
+
+        });
+
+    });
+
+    describe("authorizationInterceptor", function () {
+
+        var $q, windowService, authorizationInterceptor;
+
+        beforeEach(function () {
+
+            windowService = {redirect: jasmine.createSpy()};
+
+            $q = {reject: jasmine.createSpy()};
 
             module(function ($provide) {
-                $provide.value('$window', $window);
+                $provide.value('windowService', windowService);
+                $provide.value('$q', $q);
             });
 
             inject(function ($injector) {
-                windowService = $injector.get('windowService');
+                authorizationInterceptor = $injector.get('authorizationInterceptor');
             });
 
         });
 
-        it('replace should redirect to "/login"', function () {
+        it('should redirect to "/login"', function () {
+
+            authorizationInterceptor.responseError({status: 401});
+
+            expect($q.reject).toHaveBeenCalledWith({status: 401});
+
+            expect(windowService.redirect).toHaveBeenCalled();
+
+        });
+
+        it('should not redirect', function() {
+
+            authorizationInterceptor.responseError({status: 404});
+
+            expect($q.reject).toHaveBeenCalledWith({status: 404});
+
+            expect(windowService.redirect).not.toHaveBeenCalled();
+
+        });
+    });
+
+    describe('windowService', function() {
+
+        var $window, windowService;
+
+        beforeEach(function() {
+
+            $window = {location: {href: jasmine.createSpy().and.returnValue('/login')}};
+
+            module(function($provide) {
+
+                $provide.value('$window', $window);
+
+            });
+
+            inject(function($injector) {
+
+                windowService = $injector.get('windowService');
+
+            });
+
+        });
+
+        it('should redirect to login page', function() {
+
             windowService.redirect();
 
-            expect($window.location.replace).toHaveBeenCalledWith("/login");
+            expect($window.location.href).toBe('/login');
+
         });
+
     });
 
-    describe("directive for amount validation", function () {
+    xdescribe('TransactionCtrl ', function() {
 
-        var compile, element, contents, rootScope;
-        beforeEach(module('transaction'));
-        beforeEach(inject(function (_$compile_, $rootScope) {
-            compile = _$compile_;
-            rootScope = $rootScope;
-        }));
+       var controller, scope, _bankService, state;
 
-        it('should return undefined after giving to input wrong value', function () {
-            element = angular.element('<input amount-validator ng-model="amount">');
+       beforeEach(inject(function($rootScope, $controller, bankService, $state) {
 
-            compile(element)(rootScope);
-            rootScope.amount = '1';
-            contents = element.contents();
-            rootScope.$apply();
-            expect(element.val()).toBe('1');
-        });
-    });
+           scope = $rootScope.$new();
+
+           _bankService = bankService;
+
+           state = $state;
+
+           $controller('TransactionCtrl', {'$scope': scope, '$state': state, 'bankService': _bankService});
+
+       }));
+
+       it('should have navigateToTransaction set', function() {
+
+            expect(scope.navigateToTransaction).toBeDefined();
+
+       });
+
+       it('should have deposit set', function() {
+             expect(scope.deposit).toBeDefined();
+       });
+
+       it('should have withdraw set', function() {
+           expect(scope.withdraw).toBeDefined();
+       });
+
+   });
 });

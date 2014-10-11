@@ -15,10 +15,48 @@ angular.module('transaction', ['ui.router'])
             data: {pageTitle: 'Transaction'}
         });
 
-        $httpProvider.interceptors.push('unauthorisedInterceptor');
+        $httpProvider.interceptors.push('authorizationInterceptor');
     }])
 
-    .factory('unauthorisedInterceptor', ['$q', 'windowService', function ($q, windowService) {
+    .service('requestService', ['$http', '$q', function($http, $q) {
+
+        return {
+
+            sendRequest: function(method, url, config) {
+
+                var defer = $q.defer();
+
+                $http({method: method, url: url, data: config}).success(function(data) {
+                    defer.resolve(data);
+
+                });
+
+                return defer.promise;
+
+            }
+        };
+
+    }])
+
+    .service('bankService', ['requestService', function (requestService) {
+
+        return {
+            fetchCurrentAmount: function () {
+                return requestService.sendRequest('GET', "/bankService/getAmount");
+            },
+
+            deposit: function (amount) {
+                return requestService.sendRequest('POST', '/bankService/deposit', {amount: amount});
+            },
+
+            withdraw: function (amount) {
+                return requestService.sendRequest("POST", "/bankService/withdraw", {amount: amount});
+            }
+        };
+
+    }])
+
+    .service('authorizationInterceptor', ['$q', 'windowService', function ($q, windowService) {
 
         return {
             'responseError': function (rejection) {
@@ -33,67 +71,12 @@ angular.module('transaction', ['ui.router'])
 
     }])
 
-    .factory('windowService', ['$window', function ($window) {
+    .service('windowService', ['$window', function ($window) {
         return {
             redirect: function () {
-                $window.location.replace("/login");
+                $window.location.href ="/login";
             }
         };
-    }])
-
-    .controller('TransactionCtrl', ['$scope', '$state', 'bankService', function ($scope, $state, bankService) {
-
-        $scope.navigateToTransaction = function () {
-            $state.go('transaction');
-        };
-
-
-        bankService.fetchCurrentAmount().then(function (amount) {
-            $scope.currentAmount = amount;
-        });
-
-        $scope.deposit = function (amount) {
-            bankService.deposit(amount).then(function (data) {
-                $scope.currentAmount = data.amount;
-            });
-        };
-
-        $scope.withdraw = function (amount) {
-
-            bankService.withdraw(amount).then(function (data) {
-                $scope.currentAmount = data.amount;
-            });
-        };
-    }])
-
-    .service('bankService', ['$http', '$q', function ($http, $q) {
-
-        return {
-            fetchCurrentAmount: function () {
-                var defer = $q.defer();
-                $http.get("/bankService/getAmount").success(function (amount) {
-                    defer.resolve(amount);
-                });
-                return defer.promise;
-            },
-
-            deposit: function (amount) {
-                var defer = $q.defer();
-                $http.post('/bankService/deposit', {amount: amount}).success(function (amount) {
-                    defer.resolve(amount);
-                });
-                return defer.promise;
-            },
-
-            withdraw: function (amount) {
-                var defer = $q.defer();
-                $http.post("/bankService/withdraw", {amount: amount}).success(function (amount) {
-                    defer.resolve(amount);
-                });
-                return defer.promise;
-            }
-        };
-
     }])
 
     .directive('amountValidator', function () {
@@ -115,4 +98,35 @@ angular.module('transaction', ['ui.router'])
                 });
             }
         };
-    });
+    })
+
+    .controller('TransactionCtrl', ['$scope', '$state', 'bankService', function ($scope, $state, bankService) {
+
+        $scope.navigateToTransaction = function () {
+            $state.go('transaction');
+        };
+
+        bankService.fetchCurrentAmount().then(function (amount) {
+
+            $scope.currentAmount = amount;
+
+        });
+
+        $scope.deposit = function (amount) {
+            bankService.deposit(amount).then(function (data) {
+
+                $scope.currentAmount = data.amount;
+            });
+        };
+
+        $scope.withdraw = function (amount) {
+
+            bankService.withdraw(amount).then(function (data) {
+                $scope.currentAmount = data.amount;
+            });
+        };
+    }])
+
+
+;
+
