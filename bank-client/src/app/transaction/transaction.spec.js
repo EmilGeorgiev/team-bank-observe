@@ -32,20 +32,9 @@ describe('Transaction module', function () {
 
     describe('requestService', function() {
 
-        var httpBackend, requestService, $q, defer;
+        var httpBackend, requestService;
 
         beforeEach(function() {
-
-            $q = {
-                defer: jasmine.createSpy(),
-                promise: jasmine.createSpy()
-            };
-
-            module(function($provide) {
-
-                $provide.value('$q', $q);
-
-            });
 
             inject(function($injector) {
 
@@ -59,17 +48,36 @@ describe('Transaction module', function () {
 
         it('should send request', function() {
 
+            httpBackend.expectPOST('/deposit').respond({amount: 140});
+
             requestService.sendRequest('POST', '/deposit', {amount: 120});
 
             httpBackend.flush();
 
-            httpBackend.expectPOST('/deposit').response({amount: 120});
-
-
-
-//            expect($q.defer()).toHaveBeenCalledWith();
-
         });
+
+        it("should simulate promise", inject(function($q, $rootScope) {
+
+            var deferred = $q.defer();
+
+            var promise = deferred.promise;
+
+            var resolvedValue;
+
+            promise.then(function(value) { resolvedValue = value; });
+
+            expect(resolvedValue).toBeUndefined();
+
+            deferred.resolve(123);
+
+            expect(resolvedValue).toBeUndefined();
+
+            $rootScope.$apply();
+
+            expect(resolvedValue).toEqual(123);
+
+
+        }));
 
     });
 

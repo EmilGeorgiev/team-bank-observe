@@ -27,8 +27,12 @@ angular.module('transaction', ['ui.router'])
                 var defer = $q.defer();
 
                 $http({method: method, url: url, data: config}).success(function(data) {
+
+                    console.log("data before defer.resolve" + data);
+
                     defer.resolve(data);
 
+                    console.log("data after defer.resolve" + data);
                 });
 
                 return defer.promise;
