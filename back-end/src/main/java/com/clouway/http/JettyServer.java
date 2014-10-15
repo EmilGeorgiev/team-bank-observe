@@ -24,7 +24,7 @@ public class JettyServer {
 
         WebAppContext webapp = new WebAppContext();
         webapp.setContextPath("/");
-        webapp.setWar("bank-server/src/main/webapp");
+        webapp.setWar("back-end/src/main/webapp");
         webapp.addServlet(jspSH, "*.jsp");
         server.setHandler(webapp);
 

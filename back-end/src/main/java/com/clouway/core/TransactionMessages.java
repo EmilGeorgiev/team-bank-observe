@@ -5,7 +5,7 @@ package com.clouway.core;
  */
 public interface TransactionMessages {
 
-    String success();
+    String onSuccess();
 
-    String failed();
+    String onFailure();
 }

@@ -4,10 +4,8 @@ import com.clouway.core.*;
 import com.clouway.persistent.PersistentBankRepository;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.ServletModule;
-import com.google.inject.servlet.SessionScoped;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +18,7 @@ public class HttpModule extends ServletModule {
     @Override
     protected void configureServlets() {
 
-        filter("/bankService/*").through(SecurityFilter.class);
+        filter("/amount/*").through(SecurityFilter.class);
 
         bind(BankRepository.class).to(PersistentBankRepository.class);
         bind(IdGenerator.class).to(SessionIdGenerator.class);
@@ -35,13 +33,13 @@ public class HttpModule extends ServletModule {
     public TransactionMessages getTransactionMessages() {
         return new TransactionMessages() {
             @Override
-            public String success() {
-                return "Transaction success";
+            public String onSuccess() {
+                return "Transaction onSuccess";
             }
 
             @Override
-            public String failed() {
-                return "Transaction failed";
+            public String onFailure() {
+                return "Transaction onFailure";
             }
         };
     }

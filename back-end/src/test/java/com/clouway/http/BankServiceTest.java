@@ -2,7 +2,6 @@ package com.clouway.http;
 
 import com.clouway.core.*;
 import com.clouway.http.fake.FakeRequestReader;
-import com.google.inject.util.Providers;
 import com.google.sitebricks.headless.Reply;
 import com.google.sitebricks.headless.Request;
 import org.jmock.Expectations;
@@ -11,6 +10,8 @@ import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.math.BigDecimal;
 
 import static com.clouway.custommatcher.ReplyMatcher.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,17 +23,17 @@ public class BankServiceTest {
 
     private BankService bankService;
     private FakeRequestReader fakeRequestReader;
-    private TransactionInfo transactionInfo;
+    private TransactionStatus transactionStatus;
     private Double amount;
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
     @Mock
-    private BankRepository bankRepository = null;
+    private BankRepository bankRepository;
 
     @Mock
-    private Request request = null;
+    private Request request;
 
     @Mock
     private BankValidator validator;
@@ -51,7 +52,7 @@ public class BankServiceTest {
 
         fakeRequestReader = new FakeRequestReader(currentUser.name, amount);
 
-        transactionInfo = new TransactionInfo(message("Success"), amount(100d));
+        transactionStatus = new TransactionStatus(message("Success"), amount(100).doubleValue());
 
     }
 
@@ -67,13 +68,13 @@ public class BankServiceTest {
             will(returnValue(true));
 
             oneOf(bankRepository).deposit(amount(100d));
-            will(returnValue(transactionInfo));
+            will(returnValue(transactionStatus));
         }
         });
 
         Reply<?> reply = bankService.deposit(request);
 
-        assertThat(reply, contains(transactionInfo));
+        assertThat(reply, contains(transactionStatus));
 
     }
 
@@ -108,13 +109,13 @@ public class BankServiceTest {
             will(returnValue(true));
 
             oneOf(bankRepository).withdraw(amount(100d));
-            will(returnValue(transactionInfo));
+            will(returnValue(transactionStatus));
         }
         });
 
         Reply<?> reply = bankService.withdraw(request);
 
-        assertThat(reply, contains(transactionInfo));
+        assertThat(reply, contains(transactionStatus));
     }
 
     @Test
@@ -158,8 +159,8 @@ public class BankServiceTest {
         return message;
     }
 
-    private double amount(double amount) {
-        return amount;
+    private BigDecimal amount(double amount) {
+        return new BigDecimal(amount);
     }
 
 }

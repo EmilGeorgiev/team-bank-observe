@@ -7,9 +7,9 @@ import java.math.BigDecimal;
  */
 public class TransactionStatus {
     public final String message;
-    public final BigDecimal amount;
+    public final Double amount;
 
-    public TransactionStatus(String message, BigDecimal amount) {
+    public TransactionStatus(String message, Double amount) {
 
         this.message = message;
         this.amount = amount;

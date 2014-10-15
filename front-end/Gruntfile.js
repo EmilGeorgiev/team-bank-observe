@@ -149,7 +149,7 @@ module.exports = function ( grunt ) {
           }
         ]
       },
-      minyfy_to_server: {
+      minify_to_server: {
           expand: true,
           files: [
               {
@@ -160,7 +160,7 @@ module.exports = function ( grunt ) {
                       '<%= compile_dir %>/assets/ngbp-0.3.2.js',
                       '<%= compile_dir %>/index.html'
                   ],
-                  dest: '../bank-server/src/main/webapp'
+                  dest: '../back-end/src/main/webapp'
               }
           ]
       }
@@ -561,7 +561,7 @@ module.exports = function ( grunt ) {
   /**
    * The default task is to build and compile.
    */
-  grunt.registerTask( 'default', ['compile','copy:minyfy_to_server'] );
+  grunt.registerTask( 'default', ['compile','copy:minify_to_server'] );
 
   /**
    * The `build` task gets your app ready to run for development and testing.
@@ -646,6 +646,6 @@ module.exports = function ( grunt ) {
     });
   });
 
-  grunt.registerTask('copy_minify_server', ['compile', 'copy:minyfy_to_server']);
+  grunt.registerTask('copy_minify_server', ['compile', 'copy:minify_to_server']);
 
 };

@@ -38,7 +38,7 @@ All you have to do is clone it and start coding!
 ## Philosophy
 
 The principal goal of `ngBoilerplate` is to set projects up for long-term
-success.  So `ngBoilerplate` tries to follow best practices everywhere it can.
+onSuccess.  So `ngBoilerplate` tries to follow best practices everywhere it can.
 These are:
 
 - Properly orchestrated modules to encourage drag-and-drop component re-use.
@@ -56,7 +56,7 @@ These are:
 - Well-documented, to show new developers *why* things are set up the way they
   are.
 - It should be responsive to evidence. Community feedback is therefore crucial
-  to the success of `ngBoilerplate`.
+  to the onSuccess of `ngBoilerplate`.
 
 But `ngBoilerplate` is not an example of an AngularJS app: this is a
 kickstarter. If you're looking for an example of what a complete, non-trivial

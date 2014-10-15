@@ -9,14 +9,16 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
+import java.math.BigDecimal;
+
 /**
  * Created by emil on 14-9-25.
  */
 @Singleton
 public class PersistentBankRepository implements BankRepository {
     private final Provider<DB> dbProvider;
-    private Provider<CurrentUser> currentUser;
-    private TransactionMessages transactionMessages;
+    private final Provider<CurrentUser> currentUser;
+    private final TransactionMessages transactionMessages;
 
     @Inject
     public PersistentBankRepository(Provider<DB> dbProvider,
@@ -34,39 +36,43 @@ public class PersistentBankRepository implements BankRepository {
      * @return info for transaction and new current amount on the client
      */
     @Override
-    public TransactionInfo deposit(double amount) {
+    public TransactionStatus deposit(BigDecimal amount) {
 
         DBObject query = new BasicDBObject("name", currentUser.get().name);
 
         DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", amount));
 
-        bankAccounts().update(query, update);
+        DBObject fields = new BasicDBObject("amount", 1);
 
-        return new TransactionInfo(transactionMessages.success(), getAmount());
+        BasicDBObject dbObject = (BasicDBObject) bankAccounts().findAndModify(query, fields, null, false, update, true, false);
+
+        return new TransactionStatus(transactionMessages.onSuccess(), dbObject.getDouble("amount"));
     }
 
     /**
      * Withdraw amount from client account.If amount who withdraw is greater than current amount
-     * transaction is failed.
+     * transaction is onFailure.
      * @param amount amount who withdraw from account
      * @return info object for transaction and new current amount on the client.
      */
     @Override
-    public TransactionInfo withdraw(double amount) {
+    public TransactionStatus withdraw(BigDecimal amount) {
 
         Double currentAmount = getAmount();
 
-        if (currentAmount < amount) {
-            return new TransactionInfo(transactionMessages.failed(), currentAmount);
+        if (currentAmount < amount.doubleValue()) {
+            return new TransactionStatus(transactionMessages.onFailure(), currentAmount);
         }
 
         DBObject query = new BasicDBObject("name", currentUser.get().name);
 
-        DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", -amount));
+        DBObject update = new BasicDBObject("$inc", new BasicDBObject("amount", amount.negate()));
 
-        bankAccounts().update(query, update);
+        DBObject fields = new BasicDBObject("amount", 1);
 
-        return new TransactionInfo(transactionMessages.success(), getAmount());
+        BasicDBObject dbObject = (BasicDBObject) bankAccounts().findAndModify(query, fields, null, false, update, true, false);
+
+        return new TransactionStatus(transactionMessages.onSuccess(), dbObject.getDouble("amount"));
 
     }
 

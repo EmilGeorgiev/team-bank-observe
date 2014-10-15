@@ -1,12 +1,14 @@
 package com.clouway.core;
 
+import java.math.BigDecimal;
+
 /**
  * Created by emil on 14-9-25.
  */
 public interface BankRepository {
-    TransactionInfo deposit(double amount);
+    TransactionStatus deposit(BigDecimal amount);
 
-    TransactionInfo withdraw(double amount);
+    TransactionStatus withdraw(BigDecimal amount);
 
     double getAmount();
 }

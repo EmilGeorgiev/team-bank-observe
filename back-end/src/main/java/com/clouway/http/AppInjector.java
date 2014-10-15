@@ -13,6 +13,6 @@ public class AppInjector extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
-        return Guice.createInjector(new HttpModule(), new Sitbricks(), new PersistentModule());
+        return Guice.createInjector(new HttpModule(), new Sitebricks(), new PersistentModule());
     }
 }

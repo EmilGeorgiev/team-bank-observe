@@ -6,6 +6,7 @@ import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.servlet.RequestScoped;
 import com.google.sitebricks.SitebricksModule;
+import com.sun.tracing.dtrace.ProviderAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
 package com.clouway.persistent;
 
 import com.clouway.core.CurrentUser;
-import com.clouway.core.TransactionInfo;
+import com.clouway.core.TransactionStatus;
 import com.clouway.core.TransactionMessages;
 import com.google.inject.util.Providers;
 import com.mongodb.BasicDBObject;
@@ -11,6 +11,7 @@ import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.net.UnknownHostException;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -23,15 +24,16 @@ public class BankRepositoryTest {
 
     private PersistentBankRepository persistentBankRepository;
     private DB db;
+    private BigDecimal decimal = new BigDecimal(20);
 
     private TransactionMessages transactionMessages = new TransactionMessages() {
         @Override
-        public String success() {
+        public String onSuccess() {
             return "Success";
         }
 
         @Override
-        public String failed() {
+        public String onFailure() {
             return "Failed";
         }
     };
@@ -51,7 +53,7 @@ public class BankRepositoryTest {
 
         bankAccounts().drop();
 
-        bankAccounts().insert(new BasicDBObject("name", "Ivan").append("amount", 100d));
+        bankAccounts().insert(new BasicDBObject("name", "Ivan").append("amount", new BigDecimal(100)));
     }
 
 
@@ -59,7 +61,7 @@ public class BankRepositoryTest {
     @Test
     public void depositAmount() throws Exception {
 
-        TransactionInfo info = persistentBankRepository.deposit(20d);
+        TransactionStatus info = persistentBankRepository.deposit(decimal);
 
         assertThat(info.message, is("Success"));
         assertThat(info.amount, is(120d));
@@ -70,9 +72,10 @@ public class BankRepositoryTest {
     @Test
     public void makeTwoDepositTransactions() throws Exception {
 
-        persistentBankRepository.deposit(20d);
 
-        TransactionInfo info = persistentBankRepository.deposit(80d);
+        persistentBankRepository.deposit(decimal);
+
+        TransactionStatus info = persistentBankRepository.deposit(new BigDecimal(80));
 
         assertThat(info.message, is("Success"));
         assertThat(info.amount, is(200d));
@@ -82,20 +85,20 @@ public class BankRepositoryTest {
     @Test
     public void withdrawAmount() throws Exception {
 
-        TransactionInfo info = persistentBankRepository.withdraw(20d);
+        TransactionStatus status = persistentBankRepository.withdraw(decimal);
 
-        assertThat(info.message, is("Success"));
-        assertThat(info.amount, is(80d));
+        assertThat(status.message, is("Success"));
+        assertThat(status.amount, is(80d));
 
     }
 
     @Test
     public void withdrawMoreThanWeHave() throws Exception {
 
-        TransactionInfo info = persistentBankRepository.withdraw(200d);
+        TransactionStatus status = persistentBankRepository.withdraw(new BigDecimal(200));
 
-        assertThat(info.message, is("Failed"));
-        assertThat(info.amount, is(100d));
+        assertThat(status.message, is("Failed"));
+        assertThat(status.amount, is(100d));
 
     }
 
