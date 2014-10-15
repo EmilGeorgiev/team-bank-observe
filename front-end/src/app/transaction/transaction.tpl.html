@@ -1,0 +1,25 @@
+<div ng-controller="TransactionCtrl" align="center" class="container">
+    <form class="css-form">
+        <div class="btn-group btn-group-md">
+            <div>Balance:</div>
+            <div>{{currentAmount}} $</div>
+
+            <div class="input-group">
+                <input class="form-control" type="text" ng-model="amount" placeholder="Enter amount" amount-validator>
+                <br/>
+
+                <div>
+                    <br/>
+                    <div>
+                        <button id="deposit" class="btn btn-primary btn-xs" type="button" ng-click="deposit(amount)"
+                                >Deposit
+                        </button>
+
+                        <button id="withdraw" class="btn btn-primary btn-xs" type="button" ng-click="withdraw(amount)"
+                                >Withdraw
+                        </button>
+                    </div>
+
+            </div>
+    </form>
+</div>
