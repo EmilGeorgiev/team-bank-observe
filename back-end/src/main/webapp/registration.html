@@ -1,0 +1,53 @@
+<html>
+<head>
+    <link rel="stylesheet" href="registration.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <meta http-equiv="Cache-control" content="No-cache">
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <title>BankRegistration</title>
+</head>
+<h1 align="center">
+    <small>Registration</small>
+</h1>
+<body style="background-color: powderblue">
+
+<div class="container" align="center">
+    <p></p>
+
+    <div>
+        @ShowIf(error!=null)
+        <p style="color: #ff0000">${error}</p>
+    </div>
+
+    <form class="col-md-12 go-right" role="form" action="/registration" method="post">
+        <div class="form-group" style="width: 50%">
+            <div class="input-group">
+                <input type="text" class="form-control" id="inputUserName" placeholder="Username" name="user.name">
+                <label for="inputUserName">From 5 to 15 letters</label>
+                <span class="input-group-addon glyphicon glyphicon-user"></span>
+            </div>
+        </div>
+        <div class="form-group" style="width: 50%">
+            <div class="input-group">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+                       name="user.password">
+                <label for="inputPassword">From 6 to 18 letters or digits</label>
+                <span class="input-group-addon glyphicon glyphicon-lock"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="width: 80%">
+            <div class="col-md-offset-1 col-md-10">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </div>
+    </form>
+    <p></p>
+</div>
+
+</body>
+</html>
